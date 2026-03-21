@@ -34,8 +34,26 @@ Esse schema já inclui:
 ## Fluxo de acesso
 
 - Usuário sem login: redirecionado para `/auth`
-- Usuário logado sem autorização: redirecionado para `/pagamento`
+- Usuário logado sem assinatura ativa: redirecionado para `/pagamento`
 - Usuário admin: acesso também ao `/admin`
+- Autorização padrão: somente por pagamento (Stripe webhook atualiza `billing_status` e `is_authorized`)
+
+### Kiwify (página de vendas + checkout + entrega de acesso)
+
+1. Defina `PAYMENT_PROVIDER=kiwify`.
+2. Defina `NEXT_PUBLIC_CHECKOUT_URL` com o link de checkout da Kiwify.
+3. Defina `KIWIFY_WEBHOOK_SECRET`.
+4. Configure webhook na Kiwify para:
+   - `POST https://SEU_DOMINIO/api/v1/kiwify/webhook`
+5. Com pagamento aprovado, o webhook ativa:
+   - `profiles.billing_status = active`
+   - `profiles.is_authorized = true`
+
+### Modo somente pagantes
+
+- `ALLOW_MANUAL_AUTHORIZATION=false` (padrão): painel admin não libera acesso manual.
+- `ALLOW_LEGACY_MANUAL_AUTH=false` (padrão): `is_authorized` manual legado não concede acesso.
+- Acesso real considera `billing_status` ativo (`active` ou `trialing`), com exceção de admin.
 
 Proteção centralizada em [`src/middleware.ts`](./src/middleware.ts).
 

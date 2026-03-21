@@ -20,13 +20,15 @@ export async function createStripeCheckoutSession(params: {
     throw new Error("Missing billing environment variables.");
   }
 
+  const baseUrl = appUrl.replace(/\/$/, "");
   const body = new URLSearchParams();
   body.set("mode", "subscription");
   body.set("line_items[0][price]", priceId);
   body.set("line_items[0][quantity]", "1");
   body.set("customer_email", params.customerEmail);
-  body.set("success_url", `${appUrl}/dashboard?billing=success`);
-  body.set("cancel_url", `${appUrl}/pagamento?billing=cancelled`);
+  body.set("success_url", `${baseUrl}/dashboard?billing=success`);
+  body.set("cancel_url", `${baseUrl}/pagamento?billing=cancelled`);
+  body.set("client_reference_id", params.userId);
   body.set("metadata[user_id]", params.userId);
 
   const response = await fetch(`${STRIPE_API_BASE}/checkout/sessions`, {
@@ -45,4 +47,3 @@ export async function createStripeCheckoutSession(params: {
 
   return payload as { id: string; url: string };
 }
-

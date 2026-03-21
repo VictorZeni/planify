@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { resolveAccess } from "@/lib/server/access-state";
 
 export async function requireUserContext() {
   const supabase = await createClient();
@@ -18,7 +19,7 @@ export async function requireUserContext() {
 
   const { data: profileData, error: profileError } = await supabase
     .from("profiles")
-    .select("display_name, avatar_url, is_authorized, is_admin")
+    .select("display_name, avatar_url, is_authorized, is_admin, billing_status")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -40,8 +41,7 @@ export async function requireUserContext() {
     }
   }
 
-  const isAuthorized = profileData?.is_authorized ?? false;
-  const isAdmin = profileData?.is_admin ?? false;
+  const { isAuthorized, isAdmin, billingStatus, isAuthorizedByPayment } = resolveAccess(profileData);
 
   return {
     supabase,
@@ -56,6 +56,8 @@ export async function requireUserContext() {
     access: {
       isAuthorized,
       isAdmin,
+      billingStatus,
+      isAuthorizedByPayment,
     },
   };
 }

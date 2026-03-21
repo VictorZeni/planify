@@ -9,10 +9,17 @@ export type AdminUser = {
   displayName: string;
   isAuthorized: boolean;
   isAdmin: boolean;
+  billingStatus?: string;
   updatedAt: string | null;
 };
 
-export function AdminClient({ initialUsers }: { initialUsers: AdminUser[] }) {
+export function AdminClient({
+  initialUsers,
+  allowManualAuthorization,
+}: {
+  initialUsers: AdminUser[];
+  allowManualAuthorization: boolean;
+}) {
   const [users, setUsers] = useState<AdminUser[]>(initialUsers);
   const [message, setMessage] = useState("");
 
@@ -55,6 +62,7 @@ export function AdminClient({ initialUsers }: { initialUsers: AdminUser[] }) {
               <th className="px-4 py-3">Email</th>
               <th className="px-4 py-3">Nome</th>
               <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">Cobrança</th>
               <th className="px-4 py-3">Acao</th>
             </tr>
           </thead>
@@ -80,6 +88,14 @@ export function AdminClient({ initialUsers }: { initialUsers: AdminUser[] }) {
                   ) : null}
                 </td>
                 <td className="px-4 py-3">
+                  <span className="rounded-full bg-slate-700/60 px-2 py-1 text-xs text-slate-200">
+                    {user.billingStatus ?? "inactive"}
+                  </span>
+                </td>
+                <td className="px-4 py-3">
+                  {!allowManualAuthorization ? (
+                    <span className="text-xs text-slate-400">Acesso via pagamento</span>
+                  ) : (
                   <button
                     type="button"
                     onClick={() => void toggleAuthorization(user.id, !user.isAuthorized)}
@@ -91,6 +107,7 @@ export function AdminClient({ initialUsers }: { initialUsers: AdminUser[] }) {
                   >
                     {user.isAuthorized ? "Bloquear acesso" : "Liberar acesso"}
                   </button>
+                  )}
                 </td>
               </tr>
             ))}

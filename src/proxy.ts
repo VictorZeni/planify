@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { resolveAccess } from "@/lib/server/access-state";
 
 const PUBLIC_PAGES = new Set(["/auth", "/acesso-negado", "/pagamento"]);
-const PUBLIC_API_PREFIXES = ["/api/v1/health", "/api/v1/stripe/webhook"];
+const PUBLIC_API_PREFIXES = [
+  "/api/v1/health",
+  "/api/v1/stripe/webhook",
+  "/api/v1/kiwify/webhook",
+];
 const AUTHORIZED_WHITELIST = new Set(["/pagamento", "/acesso-negado"]);
 const AUTHORIZED_API_WHITELIST = ["/api/v1/billing/checkout", "/api/v1/profile"];
 
@@ -90,12 +95,11 @@ export async function proxy(request: NextRequest) {
 
   const { data: profileData } = await supabase
     .from("profiles")
-    .select("is_authorized, is_admin")
+    .select("is_authorized, is_admin, billing_status")
     .eq("id", user.id)
     .maybeSingle();
 
-  const isAuthorized = profileData?.is_authorized ?? false;
-  const isAdmin = profileData?.is_admin ?? false;
+  const { isAuthorized, isAdmin } = resolveAccess(profileData);
 
   if (pathname === "/") {
     return NextResponse.redirect(new URL("/auth", request.url));

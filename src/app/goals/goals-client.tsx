@@ -3,11 +3,13 @@
 import { FormEvent, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { SectionCard } from "@/components/ui/section-card";
+import { addDaysToDateInput, toDateInputValue } from "@/lib/date-utils";
 
 type Goal = {
   id: string;
   title: string;
   description: string | null;
+  target_date: string | null;
   status: "active" | "paused" | "completed";
 };
 
@@ -29,6 +31,7 @@ export function GoalsClient({
   const [progress, setProgress] = useState(initialProgress);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [targetDate, setTargetDate] = useState("");
   const [message, setMessage] = useState("");
 
   const progressMap = useMemo(
@@ -39,7 +42,7 @@ export function GoalsClient({
   async function createGoal(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (title.trim().length < 3) {
-      setMessage("Título muito curto.");
+      setMessage("Titulo muito curto.");
       return;
     }
 
@@ -54,8 +57,9 @@ export function GoalsClient({
         user_id: user.id,
         title: title.trim(),
         description: description.trim() || null,
+        target_date: targetDate || null,
       })
-      .select("id, title, description, status")
+      .select("id, title, description, target_date, status")
       .single();
 
     if (error) {
@@ -67,25 +71,56 @@ export function GoalsClient({
     setProgress((prev) => [{ goalId: data.id, total: 0, completed: 0 }, ...prev]);
     setTitle("");
     setDescription("");
+    setTargetDate("");
     setMessage("Meta criada.");
   }
 
   return (
     <div className="space-y-6">
-      <SectionCard title="Nova meta" subtitle="Defina objetivos de curto, médio e longo prazo.">
+      <SectionCard title="Nova meta" subtitle="Defina objetivos de curto, medio e longo prazo.">
         <form onSubmit={createGoal} className="grid gap-3 md:grid-cols-2">
           <input
             value={title}
             onChange={(event) => setTitle(event.target.value)}
-            placeholder="Ex.: Conseguir certificação em 90 dias"
+            placeholder="Ex.: Conseguir certificacao em 90 dias"
             className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none ring-cyan-300 focus:ring-2"
           />
           <input
             value={description}
             onChange={(event) => setDescription(event.target.value)}
-            placeholder="Descrição (opcional)"
+            placeholder="Descricao (opcional)"
             className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none ring-cyan-300 focus:ring-2"
           />
+          <input
+            type="date"
+            value={targetDate}
+            onChange={(event) => setTargetDate(event.target.value)}
+            className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none ring-cyan-300 focus:ring-2"
+          />
+          <div className="flex flex-wrap gap-2">
+            {[
+              { label: "+30 dias", value: addDaysToDateInput(30) },
+              { label: "+90 dias", value: addDaysToDateInput(90) },
+              { label: "+365 dias", value: addDaysToDateInput(365) },
+              { label: "Hoje", value: toDateInputValue(new Date()) },
+            ].map((preset) => (
+              <button
+                key={preset.label}
+                type="button"
+                onClick={() => setTargetDate(preset.value)}
+                className="rounded-md border border-slate-700 px-2 py-1 text-xs text-slate-200 transition hover:border-slate-500"
+              >
+                {preset.label}
+              </button>
+            ))}
+            <button
+              type="button"
+              onClick={() => setTargetDate("")}
+              className="rounded-md border border-slate-700 px-2 py-1 text-xs text-slate-200 transition hover:border-slate-500"
+            >
+              Sem data
+            </button>
+          </div>
           <button
             type="submit"
             className="rounded-lg bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300 md:col-span-2"
@@ -95,7 +130,7 @@ export function GoalsClient({
         </form>
       </SectionCard>
 
-      <SectionCard title="Metas ativas" subtitle="Acompanhe evolução visualmente.">
+      <SectionCard title="Metas ativas" subtitle="Acompanhe evolucao visualmente.">
         <div className="space-y-3">
           {goals.length === 0 ? (
             <p className="text-sm text-slate-400">Nenhuma meta cadastrada.</p>
@@ -111,6 +146,11 @@ export function GoalsClient({
                   <p className="font-semibold text-slate-100">{goal.title}</p>
                   {goal.description ? (
                     <p className="mt-1 text-sm text-slate-300">{goal.description}</p>
+                  ) : null}
+                  {goal.target_date ? (
+                    <p className="mt-1 text-xs text-cyan-200">
+                      Data alvo: {new Date(`${goal.target_date}T00:00:00`).toLocaleDateString("pt-BR")}
+                    </p>
                   ) : null}
                   <div className="mt-3 h-2 rounded-full bg-slate-800">
                     <div

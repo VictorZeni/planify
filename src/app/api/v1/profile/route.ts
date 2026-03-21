@@ -18,7 +18,7 @@ export async function GET() {
   const { data, error } = await supabase
     .from("profiles")
     .select(
-      "display_name, first_name, last_name, gender, avatar_url, is_authorized, is_admin",
+      "display_name, first_name, last_name, gender, avatar_url, is_authorized, is_admin, billing_status",
     )
     .eq("id", user.id)
     .maybeSingle();
@@ -37,6 +37,7 @@ export async function GET() {
       avatarUrl: data?.avatar_url ?? null,
       isAuthorized: data?.is_authorized ?? false,
       isAdmin: data?.is_admin ?? false,
+      billingStatus: data?.billing_status ?? "inactive",
     },
   });
 }

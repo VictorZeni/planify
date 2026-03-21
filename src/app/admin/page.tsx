@@ -11,7 +11,7 @@ export default async function AdminPage() {
     adminClient.auth.admin.listUsers(),
     adminClient
       .from("profiles")
-      .select("id, display_name, is_authorized, is_admin, updated_at")
+      .select("id, display_name, is_authorized, is_admin, billing_status, updated_at")
       .order("updated_at", { ascending: false }),
   ]);
 
@@ -24,9 +24,12 @@ export default async function AdminPage() {
       displayName: profile.display_name ?? authUser?.email?.split("@")[0] ?? "Usuario",
       isAuthorized: profile.is_authorized ?? false,
       isAdmin: profile.is_admin ?? false,
+      billingStatus: profile.billing_status ?? "inactive",
       updatedAt: profile.updated_at ?? null,
     };
   });
+
+  const allowManualAuthorization = process.env.ALLOW_MANUAL_AUTHORIZATION === "true";
 
   return (
     <AppShell user={userCard}>
@@ -39,7 +42,10 @@ export default async function AdminPage() {
           </p>
         </header>
 
-        <AdminClient initialUsers={initialUsers} />
+        <AdminClient
+          initialUsers={initialUsers}
+          allowManualAuthorization={allowManualAuthorization}
+        />
       </div>
     </AppShell>
   );

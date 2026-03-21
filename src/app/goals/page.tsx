@@ -9,7 +9,7 @@ export default async function GoalsPage() {
   const [{ data: goals }, { data: steps }] = await Promise.all([
     supabase
       .from("goals")
-      .select("id, title, description, status")
+      .select("id, title, description, target_date, status")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false }),
     supabase
@@ -39,6 +39,7 @@ export default async function GoalsPage() {
             id: string;
             title: string;
             description: string | null;
+            target_date: string | null;
             status: "active" | "paused" | "completed";
           }>}
           initialProgress={(goals ?? []).map((goal) => {

@@ -15,7 +15,7 @@ export async function GET() {
       adminClient.auth.admin.listUsers(),
       adminClient
         .from("profiles")
-        .select("id, display_name, is_authorized, is_admin, updated_at")
+        .select("id, display_name, is_authorized, is_admin, billing_status, updated_at")
         .order("updated_at", { ascending: false }),
     ]);
 
@@ -36,10 +36,10 @@ export async function GET() {
       displayName: profile.display_name ?? authUser?.email?.split("@")[0] ?? "Usuário",
       isAuthorized: profile.is_authorized ?? false,
       isAdmin: profile.is_admin ?? false,
+      billingStatus: profile.billing_status ?? "inactive",
       updatedAt: profile.updated_at ?? null,
     };
   });
 
   return NextResponse.json({ data: response });
 }
-

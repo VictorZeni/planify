@@ -4,6 +4,7 @@ import {
   apiForbidden,
   apiUnauthorized,
 } from "@/lib/server/api-response";
+import { resolveAccess } from "@/lib/server/access-state";
 
 type AccessOptions = {
   requireAuthorized?: boolean;
@@ -23,7 +24,7 @@ export async function requireApiAccess(options: AccessOptions = {}) {
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("is_authorized, is_admin")
+    .select("is_authorized, is_admin, billing_status")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -31,8 +32,7 @@ export async function requireApiAccess(options: AccessOptions = {}) {
     return { errorResponse: apiError(profileError.message, 400) };
   }
 
-  const isAuthorized = profile?.is_authorized ?? false;
-  const isAdmin = profile?.is_admin ?? false;
+  const { isAuthorized, isAdmin, billingStatus, isAuthorizedByPayment } = resolveAccess(profile);
 
   if (options.requireAuthorized && !isAuthorized) {
     return {
@@ -46,6 +46,9 @@ export async function requireApiAccess(options: AccessOptions = {}) {
     return { errorResponse: apiForbidden("Forbidden") };
   }
 
-  return { supabase, user, access: { isAuthorized, isAdmin } };
+  return {
+    supabase,
+    user,
+    access: { isAuthorized, isAdmin, billingStatus, isAuthorizedByPayment },
+  };
 }
-

@@ -7,6 +7,7 @@ import { TaskCard } from "@/components/dashboard/task-card";
 import { normalizePriority, type Priority } from "@/lib/priority";
 import { DailyMission } from "@/components/dashboard/daily-mission";
 import { AlertState, LoadingState } from "@/components/ui/feedback-state";
+import { addDaysToDateInput, dateInputToEndOfDayIso, toDateInputValue } from "@/lib/date-utils";
 
 type Category = {
   id: string;
@@ -170,8 +171,8 @@ export function TasksPanel() {
       return "Título deve ter ao menos 3 caracteres.";
     }
 
-    if (state.deadline) {
-      const parsed = new Date(state.deadline);
+      if (state.deadline) {
+      const parsed = new Date(`${state.deadline}T00:00:00`);
       if (Number.isNaN(parsed.getTime())) {
         return "Prazo invalido.";
       }
@@ -204,7 +205,7 @@ export function TasksPanel() {
         return;
       }
 
-      const dueAtIso = form.deadline ? new Date(form.deadline).toISOString() : null;
+      const dueAtIso = dateInputToEndOfDayIso(form.deadline);
 
       const { error } = await supabase.from("tasks").insert({
         user_id: user.id,
@@ -350,11 +351,35 @@ export function TasksPanel() {
           className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none ring-cyan-300 transition focus:ring-2 md:col-span-2"
         />
         <input
-          type="datetime-local"
+          type="date"
           value={form.deadline}
           onChange={(event) => updateFormField("deadline", event.target.value)}
           className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none ring-cyan-300 transition focus:ring-2"
         />
+        <div className="flex flex-wrap gap-2 md:col-span-2">
+          {[
+            { label: "Hoje", value: toDateInputValue(new Date()) },
+            { label: "Amanhã", value: addDaysToDateInput(1) },
+            { label: "+3 dias", value: addDaysToDateInput(3) },
+            { label: "+7 dias", value: addDaysToDateInput(7) },
+          ].map((preset) => (
+            <button
+              key={preset.label}
+              type="button"
+              onClick={() => updateFormField("deadline", preset.value)}
+              className="rounded-md border border-slate-700 px-2 py-1 text-xs text-slate-200 transition hover:border-slate-500"
+            >
+              {preset.label}
+            </button>
+          ))}
+          <button
+            type="button"
+            onClick={() => updateFormField("deadline", "")}
+            className="rounded-md border border-slate-700 px-2 py-1 text-xs text-slate-200 transition hover:border-slate-500"
+          >
+            Sem prazo
+          </button>
+        </div>
         <select
           value={form.category}
           onChange={(event) => updateFormField("category", event.target.value)}

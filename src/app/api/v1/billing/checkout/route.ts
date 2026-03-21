@@ -2,13 +2,42 @@ import { NextResponse } from "next/server";
 import { createStripeCheckoutSession } from "@/lib/server/stripe";
 import { requireApiAccess } from "@/lib/server/api-access";
 import { apiError } from "@/lib/server/api-response";
+import { isPaymentActive } from "@/lib/server/billing-status";
 
 export async function POST() {
   const access = await requireApiAccess();
   if ("errorResponse" in access) return access.errorResponse;
-  const { user } = access;
+  const { user, access: accessState } = access;
+
+  if (isPaymentActive(accessState.billingStatus)) {
+    return NextResponse.json({
+      data: {
+        url: `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/dashboard`,
+        alreadyActive: true,
+      },
+    });
+  }
 
   try {
+    const paymentProvider = process.env.PAYMENT_PROVIDER ?? "stripe";
+    const checkoutUrl = process.env.NEXT_PUBLIC_CHECKOUT_URL;
+
+    if (paymentProvider === "kiwify") {
+      if (!checkoutUrl) {
+        return apiError("Missing NEXT_PUBLIC_CHECKOUT_URL for Kiwify checkout.", 500);
+      }
+
+      const url = new URL(checkoutUrl);
+      url.searchParams.set("email", user.email ?? "");
+      url.searchParams.set("external_id", user.id);
+      return NextResponse.json({
+        data: {
+          url: url.toString(),
+          provider: "kiwify",
+        },
+      });
+    }
+
     const checkout = await createStripeCheckoutSession({
       customerEmail: user.email ?? "",
       userId: user.id,
@@ -18,6 +47,7 @@ export async function POST() {
       data: {
         sessionId: checkout.id,
         url: checkout.url,
+        provider: "stripe",
       },
     });
   } catch (error) {

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireAdminApi } from "@/lib/server/require-admin";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { apiForbidden } from "@/lib/server/api-response";
 
 const paramsSchema = z.object({
   id: z.string().uuid(),
@@ -15,6 +16,10 @@ export async function PATCH(
   request: Request,
   context: { params: Promise<{ id: string }> },
 ) {
+  if (process.env.ALLOW_MANUAL_AUTHORIZATION !== "true") {
+    return apiForbidden("Liberação manual desativada. Acesso apenas via pagamento.");
+  }
+
   const adminGuard = await requireAdminApi();
   if ("errorResponse" in adminGuard) {
     return adminGuard.errorResponse;
