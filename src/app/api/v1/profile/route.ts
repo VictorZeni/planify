@@ -2,12 +2,16 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireApiAccess } from "@/lib/server/api-access";
 import { apiError, apiValidationError } from "@/lib/server/api-response";
+import { DEFAULT_THEME, THEMES } from "@/lib/theme";
+
+const themeIds = THEMES.map((theme) => theme.id);
 
 const updateProfileSchema = z.object({
   displayName: z.string().trim().min(2).max(80),
   firstName: z.string().trim().min(2).max(40).optional(),
   lastName: z.string().trim().min(2).max(60).optional(),
   gender: z.enum(["masculino", "feminino", "outro", "nao_informar"]).optional(),
+  theme: z.enum(themeIds as [string, ...string[]]).optional(),
 });
 
 export async function GET() {
@@ -18,7 +22,7 @@ export async function GET() {
   const { data, error } = await supabase
     .from("profiles")
     .select(
-      "display_name, first_name, last_name, gender, avatar_url, is_authorized, is_admin, billing_status",
+      "display_name, first_name, last_name, gender, theme, avatar_url, is_authorized, is_admin, billing_status",
     )
     .eq("id", user.id)
     .maybeSingle();
@@ -34,6 +38,7 @@ export async function GET() {
       firstName: data?.first_name ?? null,
       lastName: data?.last_name ?? null,
       gender: data?.gender ?? "nao_informar",
+      theme: data?.theme ?? DEFAULT_THEME,
       avatarUrl: data?.avatar_url ?? null,
       isAuthorized: data?.is_authorized ?? false,
       isAdmin: data?.is_admin ?? false,
@@ -54,13 +59,14 @@ export async function PATCH(request: Request) {
     return apiValidationError(parsed.error.flatten());
   }
 
-  const { displayName, firstName, lastName, gender } = parsed.data;
+  const { displayName, firstName, lastName, gender, theme } = parsed.data;
   const { error } = await supabase.from("profiles").upsert({
     id: user.id,
     display_name: displayName,
     first_name: firstName ?? null,
     last_name: lastName ?? null,
     gender: gender ?? "nao_informar",
+    theme: theme ?? DEFAULT_THEME,
     updated_at: new Date().toISOString(),
   });
 
@@ -68,5 +74,7 @@ export async function PATCH(request: Request) {
     return apiError(error.message, 400);
   }
 
-  return NextResponse.json({ data: { displayName, firstName, lastName, gender } });
+  return NextResponse.json({
+    data: { displayName, firstName, lastName, gender, theme: theme ?? DEFAULT_THEME },
+  });
 }

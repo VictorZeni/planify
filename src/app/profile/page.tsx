@@ -20,7 +20,7 @@ export default async function ProfilePage() {
 
   const { data: profileData } = await supabase
     .from("profiles")
-    .select("display_name, avatar_url, is_admin, is_authorized")
+    .select("display_name, avatar_url, theme, is_admin, is_authorized")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -47,6 +47,7 @@ export default async function ProfilePage() {
           initialDisplayName={displayName}
           initialEmail={user.email ?? ""}
           initialAvatarUrl={avatarUrl}
+          initialTheme={profileData?.theme ?? "foco"}
         />
       </div>
     </AppShell>

@@ -1,20 +1,30 @@
 "use client";
 
 import { useState } from "react";
+import { DEFAULT_THEME, isThemeName, THEMES, type ThemeName } from "@/lib/theme";
 
 type ProfileClientProps = {
   initialDisplayName: string;
   initialEmail: string;
   initialAvatarUrl: string | null;
+  initialTheme: string;
 };
+
+function applyTheme(theme: ThemeName) {
+  document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem("planify-theme", theme);
+}
 
 export function ProfileClient({
   initialDisplayName,
   initialEmail,
   initialAvatarUrl,
+  initialTheme,
 }: ProfileClientProps) {
+  const normalizedInitialTheme = isThemeName(initialTheme) ? initialTheme : DEFAULT_THEME;
   const [displayName, setDisplayName] = useState(initialDisplayName);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(initialAvatarUrl);
+  const [theme, setTheme] = useState<ThemeName>(normalizedInitialTheme);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -25,7 +35,7 @@ export function ProfileClient({
     const response = await fetch("/api/v1/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ displayName }),
+      body: JSON.stringify({ displayName, theme }),
     });
     const payload = await response.json();
 
@@ -35,6 +45,7 @@ export function ProfileClient({
       return;
     }
 
+    applyTheme(theme);
     setMessage("Perfil atualizado com sucesso.");
     setLoading(false);
   }
@@ -95,13 +106,39 @@ export function ProfileClient({
         </label>
       </div>
 
-      <div className="mt-6 grid gap-3 md:max-w-lg">
+      <div className="mt-6 grid gap-3 md:max-w-xl">
         <label className="text-sm text-slate-300">Nome de exibicao</label>
         <input
           value={displayName}
           onChange={(event) => setDisplayName(event.target.value)}
           className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none ring-cyan-300 transition focus:ring-2"
         />
+
+        <label className="mt-2 text-sm text-slate-300">Tema visual (psicologia das cores)</label>
+        <div className="grid gap-2">
+          {THEMES.map((item) => {
+            const selected = theme === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => {
+                  setTheme(item.id);
+                  applyTheme(item.id);
+                }}
+                className={`rounded-lg border px-3 py-2 text-left transition ${
+                  selected
+                    ? "border-cyan-400/50 bg-cyan-400/10"
+                    : "border-slate-700 bg-slate-950 hover:border-slate-500"
+                }`}
+              >
+                <p className="text-sm font-semibold text-slate-100">{item.label}</p>
+                <p className="text-xs text-slate-300">{item.description}</p>
+              </button>
+            );
+          })}
+        </div>
+
         <button
           type="button"
           onClick={() => void handleSaveProfile()}

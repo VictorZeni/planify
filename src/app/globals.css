@@ -1,8 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --app-bg: #0f172a;
+  --app-text: #f8fafc;
+  --app-glow: rgba(34, 211, 238, 0.12);
+  --app-accent: #22d3ee;
 }
 
 @theme inline {
@@ -13,15 +17,36 @@
   --font-mono: "Cascadia Code", "Consolas", "Fira Code", monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root[data-theme="foco"] {
+  --app-bg: #0f172a;
+  --app-text: #f8fafc;
+  --app-glow: rgba(34, 211, 238, 0.12);
+  --app-accent: #22d3ee;
+}
+
+:root[data-theme="energia"] {
+  --app-bg: #1c1917;
+  --app-text: #fff7ed;
+  --app-glow: rgba(251, 146, 60, 0.14);
+  --app-accent: #fb923c;
+}
+
+:root[data-theme="calma"] {
+  --app-bg: #052e2b;
+  --app-text: #ecfeff;
+  --app-glow: rgba(16, 185, 129, 0.14);
+  --app-accent: #34d399;
+}
+
+:root[data-theme="equilibrio"] {
+  --app-bg: #1e1b4b;
+  --app-text: #f5f3ff;
+  --app-glow: rgba(139, 92, 246, 0.14);
+  --app-accent: #a78bfa;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--app-bg);
+  color: var(--app-text);
   font-family: var(--font-sans);
 }
