@@ -1,18 +1,16 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { createClient } from "@/lib/supabase/server";
+import { requireApiAccess } from "@/lib/server/api-access";
+import { apiError, apiValidationError } from "@/lib/server/api-response";
 
 const bodySchema = z.object({
   taskId: z.string().uuid(),
 });
 
 export async function GET() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const access = await requireApiAccess({ requireAuthorized: true });
+  if ("errorResponse" in access) return access.errorResponse;
+  const { supabase, user } = access;
 
   const today = new Date().toISOString().slice(0, 10);
   const { data, error } = await supabase
@@ -21,23 +19,20 @@ export async function GET() {
     .eq("user_id", user.id)
     .eq("mission_date", today);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+  if (error) return apiError(error.message, 400);
 
   return NextResponse.json({ data: (data ?? []).map((row) => row.task_id) });
 }
 
 export async function POST(request: Request) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const access = await requireApiAccess({ requireAuthorized: true });
+  if ("errorResponse" in access) return access.errorResponse;
+  const { supabase, user } = access;
 
   const payload = await request.json();
   const parsed = bodySchema.safeParse(payload);
   if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid payload" }, { status: 422 });
+    return apiValidationError();
   }
 
   const today = new Date().toISOString().slice(0, 10);
@@ -47,9 +42,9 @@ export async function POST(request: Request) {
     .eq("user_id", user.id)
     .eq("mission_date", today);
 
-  if (currentError) return NextResponse.json({ error: currentError.message }, { status: 400 });
+  if (currentError) return apiError(currentError.message, 400);
   if ((current ?? []).length >= 3) {
-    return NextResponse.json({ error: "Limite de 3 tarefas por dia." }, { status: 409 });
+    return apiError("Limite de 3 tarefas por dia.", 409);
   }
 
   const { error } = await supabase.from("daily_missions").insert({
@@ -58,22 +53,19 @@ export async function POST(request: Request) {
     mission_date: today,
   });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+  if (error) return apiError(error.message, 400);
   return NextResponse.json({ ok: true });
 }
 
 export async function DELETE(request: Request) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const access = await requireApiAccess({ requireAuthorized: true });
+  if ("errorResponse" in access) return access.errorResponse;
+  const { supabase, user } = access;
 
   const payload = await request.json();
   const parsed = bodySchema.safeParse(payload);
   if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid payload" }, { status: 422 });
+    return apiValidationError();
   }
 
   const today = new Date().toISOString().slice(0, 10);
@@ -84,6 +76,6 @@ export async function DELETE(request: Request) {
     .eq("task_id", parsed.data.taskId)
     .eq("mission_date", today);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+  if (error) return apiError(error.message, 400);
   return NextResponse.json({ ok: true });
 }

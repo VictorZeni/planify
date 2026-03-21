@@ -1,16 +1,12 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
 import { createStripeCheckoutSession } from "@/lib/server/stripe";
+import { requireApiAccess } from "@/lib/server/api-access";
+import { apiError } from "@/lib/server/api-response";
 
 export async function POST() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const access = await requireApiAccess();
+  if ("errorResponse" in access) return access.errorResponse;
+  const { user } = access;
 
   try {
     const checkout = await createStripeCheckoutSession({
@@ -26,8 +22,7 @@ export async function POST() {
     });
   } catch (error) {
     const message =
-      error instanceof Error ? error.message : "Não foi possível iniciar checkout Stripe.";
-    return NextResponse.json({ error: message }, { status: 400 });
+      error instanceof Error ? error.message : "Nao foi possivel iniciar checkout Stripe.";
+    return apiError(message, 400);
   }
 }
-

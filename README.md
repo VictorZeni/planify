@@ -23,6 +23,7 @@ npm run dev
 ## SQL (Supabase)
 
 Execute o arquivo [`supabase/schema.sql`](../supabase/schema.sql) no SQL Editor do Supabase.
+Depois execute também [`supabase/production-hardening.sql`](../supabase/production-hardening.sql) para índices e hardening incremental.
 
 Esse schema já inclui:
 - tabelas principais
@@ -69,3 +70,9 @@ where id = (
 );
 ```
 
+## Qualidade
+
+- Testes unitários (Vitest): `npm run test:ci`
+- Lint: `npm run lint`
+- Build de produção: `npm run build`
+- CI automático em GitHub Actions: [`.github/workflows/ci.yml`](./.github/workflows/ci.yml)

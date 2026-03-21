@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { createClient } from "@/lib/supabase/server";
 import { calculateXP, levelFromXp } from "@/lib/services/xp";
 import { normalizePriority } from "@/lib/priority";
+import { requireApiAccess } from "@/lib/server/api-access";
+import { apiError, apiValidationError } from "@/lib/server/api-response";
 
 const paramsSchema = z.object({
   id: z.string().uuid(),
@@ -31,19 +32,16 @@ export async function POST(
   _request: Request,
   context: { params: Promise<{ id: string }> },
 ) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const access = await requireApiAccess({ requireAuthorized: true });
+  if ("errorResponse" in access) {
+    return access.errorResponse;
   }
+  const { supabase, user } = access;
 
   const params = await context.params;
   const parsedParams = paramsSchema.safeParse(params);
   if (!parsedParams.success) {
-    return NextResponse.json({ error: "Invalid task id" }, { status: 422 });
+    return apiValidationError();
   }
 
   const taskId = parsedParams.data.id;
@@ -56,7 +54,7 @@ export async function POST(
     .single();
 
   if (taskError || !task) {
-    return NextResponse.json({ error: taskError?.message ?? "Task not found" }, { status: 404 });
+    return apiError(taskError?.message ?? "Task not found", 404);
   }
 
   if (task.completed) {
@@ -77,7 +75,7 @@ export async function POST(
     .eq("id", taskId);
 
   if (completeError) {
-    return NextResponse.json({ error: completeError.message }, { status: 400 });
+    return apiError(completeError.message, 400);
   }
 
   const { data: currentStats } = await supabase
@@ -112,7 +110,7 @@ export async function POST(
   });
 
   if (statsError) {
-    return NextResponse.json({ error: statsError.message }, { status: 400 });
+    return apiError(statsError.message, 400);
   }
 
   return NextResponse.json({

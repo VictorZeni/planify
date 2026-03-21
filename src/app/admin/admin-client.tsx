@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AlertState } from "@/components/ui/feedback-state";
 
 export type AdminUser = {
   id: string;
@@ -97,11 +98,7 @@ export function AdminClient({ initialUsers }: { initialUsers: AdminUser[] }) {
         </table>
       </div>
 
-      {message ? (
-        <p className="rounded-lg border border-slate-700 bg-slate-950 p-3 text-sm text-slate-200">
-          {message}
-        </p>
-      ) : null}
+      {message ? <AlertState text={message} /> : null}
     </section>
   );
 }

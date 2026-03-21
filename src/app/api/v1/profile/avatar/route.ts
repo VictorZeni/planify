@@ -1,36 +1,38 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { requireApiAccess } from "@/lib/server/api-access";
+import { apiError, apiValidationError } from "@/lib/server/api-response";
 
 const ALLOWED_MIME = ["image/jpeg", "image/png", "image/webp"];
+const ALLOWED_EXT = [".jpg", ".jpeg", ".png", ".webp"];
 const MAX_FILE_SIZE = 2 * 1024 * 1024;
 
 function safeFilename(filename: string) {
   return filename.replace(/[^a-zA-Z0-9.\-_]/g, "_");
 }
 
-export async function POST(request: Request) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+function hasAllowedExtension(filename: string) {
+  const lower = filename.toLowerCase();
+  return ALLOWED_EXT.some((ext) => lower.endsWith(ext));
+}
 
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+export async function POST(request: Request) {
+  const access = await requireApiAccess();
+  if ("errorResponse" in access) return access.errorResponse;
+  const { supabase, user } = access;
 
   const form = await request.formData();
   const file = form.get("avatar");
 
   if (!(file instanceof File)) {
-    return NextResponse.json({ error: "Arquivo invalido" }, { status: 422 });
+    return apiValidationError();
   }
 
-  if (!ALLOWED_MIME.includes(file.type)) {
-    return NextResponse.json({ error: "Tipo de arquivo nao permitido" }, { status: 422 });
+  if (!ALLOWED_MIME.includes(file.type) || !hasAllowedExtension(file.name)) {
+    return apiValidationError({ message: "Tipo de arquivo nao permitido" });
   }
 
   if (file.size > MAX_FILE_SIZE) {
-    return NextResponse.json({ error: "Arquivo excede 2MB" }, { status: 422 });
+    return apiValidationError({ message: "Arquivo excede 2MB" });
   }
 
   const bytes = await file.arrayBuffer();
@@ -42,7 +44,7 @@ export async function POST(request: Request) {
     .upload(path, buffer, { upsert: true, contentType: file.type });
 
   if (uploadError) {
-    return NextResponse.json({ error: uploadError.message }, { status: 400 });
+    return apiError(uploadError.message, 400);
   }
 
   const { data: publicData } = supabase.storage.from("avatars").getPublicUrl(path);
@@ -55,7 +57,7 @@ export async function POST(request: Request) {
   });
 
   if (profileError) {
-    return NextResponse.json({ error: profileError.message }, { status: 400 });
+    return apiError(profileError.message, 400);
   }
 
   return NextResponse.json({ data: { avatarUrl } });

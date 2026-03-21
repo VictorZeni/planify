@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { TaskCard } from "@/components/dashboard/task-card";
 import { normalizePriority, type Priority } from "@/lib/priority";
 import { DailyMission } from "@/components/dashboard/daily-mission";
+import { AlertState, LoadingState } from "@/components/ui/feedback-state";
 
 type Category = {
   id: string;
@@ -437,14 +438,12 @@ export function TasksPanel() {
         ) : null}
       </AnimatePresence>
 
-      {message ? (
-        <p className="rounded-lg border border-slate-700 bg-slate-950 p-3 text-sm text-slate-200">{message}</p>
-      ) : null}
+      {message ? <AlertState text={message} /> : null}
 
       {loading ? (
-        <p className="text-sm text-slate-300">Carregando tarefas...</p>
+        <LoadingState text="Carregando tarefas..." />
       ) : filteredTasks.length === 0 ? (
-        <p className="text-sm text-slate-300">Nenhuma tarefa encontrada para os filtros selecionados.</p>
+        <LoadingState text="Nenhuma tarefa encontrada para os filtros selecionados." />
       ) : (
         <ul className="space-y-3">
           {filteredTasks.map((task) => {

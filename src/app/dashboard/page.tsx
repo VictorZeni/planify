@@ -13,6 +13,7 @@ import { normalizePriority } from "@/lib/priority";
 import { StreakIndicator } from "@/components/dashboard/streak-indicator";
 import { DisciplineScore } from "@/components/dashboard/discipline-score";
 import { RecoveryBanner } from "@/components/dashboard/recovery-banner";
+import { LineProductivityChart } from "@/components/dashboard/line-productivity-chart";
 
 type TaskRow = {
   id: string;
@@ -125,6 +126,14 @@ export default async function DashboardPage() {
   const heatmapPoints = Array.from({ length: 98 }).map((_, index) => {
     const day = new Date();
     day.setDate(day.getDate() - (97 - index));
+    const key = formatDay(day);
+    const count = tasks.filter((task) => task.completed_at?.startsWith(key)).length;
+    return { day: key, value: count };
+  });
+
+  const lineChartPoints = Array.from({ length: 14 }).map((_, index) => {
+    const day = new Date();
+    day.setDate(day.getDate() - (13 - index));
     const key = formatDay(day);
     const count = tasks.filter((task) => task.completed_at?.startsWith(key)).length;
     return { day: key, value: count };
@@ -273,6 +282,7 @@ export default async function DashboardPage() {
                 },
               ]}
             />
+            <LineProductivityChart points={lineChartPoints} />
             <HabitHeatmap points={heatmapPoints} />
           </div>
 

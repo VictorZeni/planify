@@ -1,17 +1,14 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
 import { createTaskSchema } from "@/lib/validation/task";
+import { requireApiAccess } from "@/lib/server/api-access";
+import { apiError, apiValidationError } from "@/lib/server/api-response";
 
 export async function GET() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser();
-
-  if (authError || !user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const access = await requireApiAccess({ requireAuthorized: true });
+  if ("errorResponse" in access) {
+    return access.errorResponse;
   }
+  const { supabase } = access;
 
   const { data, error } = await supabase
     .from("tasks")
@@ -19,30 +16,23 @@ export async function GET() {
     .order("created_at", { ascending: false });
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 400 });
+    return apiError(error.message, 400);
   }
 
   return NextResponse.json({ data });
 }
 
 export async function POST(request: Request) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser();
-
-  if (authError || !user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const access = await requireApiAccess({ requireAuthorized: true });
+  if ("errorResponse" in access) {
+    return access.errorResponse;
   }
+  const { supabase, user } = access;
 
   const payload = await request.json();
   const parsed = createTaskSchema.safeParse(payload);
   if (!parsed.success) {
-    return NextResponse.json(
-      { error: "Invalid payload", issues: parsed.error.flatten() },
-      { status: 422 },
-    );
+    return apiValidationError(parsed.error.flatten());
   }
 
   const { title, dueAt, categoryId, priority } = parsed.data;
@@ -60,7 +50,7 @@ export async function POST(request: Request) {
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 400 });
+    return apiError(error.message, 400);
   }
 
   return NextResponse.json({ data }, { status: 201 });
