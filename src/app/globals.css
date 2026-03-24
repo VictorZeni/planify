@@ -7,6 +7,8 @@
   --app-text: #f8fafc;
   --app-glow: rgba(34, 211, 238, 0.12);
   --app-accent: #22d3ee;
+  --app-accent-strong: #06b6d4;
+  --app-accent-soft: rgba(34, 211, 238, 0.12);
 }
 
 @theme inline {
@@ -22,6 +24,8 @@
   --app-text: #f8fafc;
   --app-glow: rgba(34, 211, 238, 0.12);
   --app-accent: #22d3ee;
+  --app-accent-strong: #06b6d4;
+  --app-accent-soft: rgba(34, 211, 238, 0.12);
 }
 
 :root[data-theme="energia"] {
@@ -29,6 +33,8 @@
   --app-text: #fff7ed;
   --app-glow: rgba(251, 146, 60, 0.14);
   --app-accent: #fb923c;
+  --app-accent-strong: #f97316;
+  --app-accent-soft: rgba(251, 146, 60, 0.14);
 }
 
 :root[data-theme="calma"] {
@@ -36,6 +42,8 @@
   --app-text: #ecfeff;
   --app-glow: rgba(16, 185, 129, 0.14);
   --app-accent: #34d399;
+  --app-accent-strong: #10b981;
+  --app-accent-soft: rgba(16, 185, 129, 0.14);
 }
 
 :root[data-theme="equilibrio"] {
@@ -43,10 +51,46 @@
   --app-text: #f5f3ff;
   --app-glow: rgba(139, 92, 246, 0.14);
   --app-accent: #a78bfa;
+  --app-accent-strong: #8b5cf6;
+  --app-accent-soft: rgba(139, 92, 246, 0.14);
+}
+
+:root[data-theme="impacto"] {
+  --app-bg: #2a0a10;
+  --app-text: #fff1f2;
+  --app-glow: rgba(244, 63, 94, 0.14);
+  --app-accent: #fb7185;
+  --app-accent-strong: #f43f5e;
+  --app-accent-soft: rgba(244, 63, 94, 0.14);
 }
 
 body {
   background: var(--app-bg);
   color: var(--app-text);
   font-family: var(--font-sans);
+}
+
+/* Harmoniza os principais acentos com o tema ativo */
+:root[data-theme] .text-cyan-300,
+:root[data-theme] .text-cyan-200 {
+  color: var(--app-accent) !important;
+}
+
+:root[data-theme] .bg-cyan-400,
+:root[data-theme] .bg-cyan-300 {
+  background-color: var(--app-accent-strong) !important;
+}
+
+:root[data-theme] .hover\:bg-cyan-300:hover,
+:root[data-theme] .hover\:bg-cyan-500\/20:hover,
+:root[data-theme] .hover\:bg-cyan-500\/25:hover {
+  background-color: var(--app-accent) !important;
+}
+
+:root[data-theme] .border-cyan-400\/40 {
+  border-color: var(--app-accent-soft) !important;
+}
+
+:root[data-theme] .bg-cyan-500\/10 {
+  background-color: var(--app-accent-soft) !important;
 }

@@ -19,6 +19,11 @@ export const THEMES = [
     label: "Equilíbrio (Roxo)",
     description: "Combina criatividade com disciplina.",
   },
+  {
+    id: "impacto",
+    label: "Impacto (Vermelho)",
+    description: "Aumenta senso de urgência e intensidade de execução.",
+  },
 ] as const;
 
 export type ThemeName = (typeof THEMES)[number]["id"];
@@ -28,4 +33,3 @@ export const DEFAULT_THEME: ThemeName = "foco";
 export function isThemeName(value: string): value is ThemeName {
   return THEMES.some((theme) => theme.id === value);
 }
-
