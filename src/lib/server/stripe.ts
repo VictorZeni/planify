@@ -1,4 +1,4 @@
-const STRIPE_API_BASE = "https://api.stripe.com/v1";
+﻿const STRIPE_API_BASE = "https://api.stripe.com/v1";
 
 function requireStripeSecretKey() {
   const key = process.env.STRIPE_SECRET_KEY;
@@ -47,3 +47,4 @@ export async function createStripeCheckoutSession(params: {
 
   return payload as { id: string; url: string };
 }
+

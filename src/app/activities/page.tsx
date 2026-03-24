@@ -1,6 +1,7 @@
-import { redirect } from "next/navigation";
+﻿import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/app-shell";
+import { PageWrapper } from "@/components/ui/page-wrapper";
 
 export default async function ActivitiesPage() {
   const supabase = await createClient();
@@ -40,18 +41,18 @@ export default async function ActivitiesPage() {
         isAuthorized: profileData?.is_authorized ?? false,
       }}
     >
-      <div className="mx-auto w-full max-w-5xl space-y-6">
-        <header className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
-          <p className="text-xs uppercase tracking-[0.2em] text-cyan-300">Atividades</p>
-          <h1 className="mt-2 text-2xl font-bold">Historico recente</h1>
-          <p className="mt-1 text-sm text-slate-300">
+      <PageWrapper maxWidth="5xl">
+        <header className="planify-surface p-6">
+          <p className="text-xs uppercase tracking-[0.2em] text-[var(--app-primary)]">Atividades</p>
+          <h1 className="mt-2 text-2xl font-semibold">HistÃ³rico recente</h1>
+          <p className="mt-1 text-sm text-[var(--app-text-muted)]">
             Acompanhe conclusoes e andamento das suas tarefas.
           </p>
         </header>
 
-        <section className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md">
+        <section className="overflow-hidden rounded-xl border border-[var(--app-border)] bg-white shadow-sm">
           <table className="min-w-full text-left text-sm">
-            <thead className="border-b border-white/10 text-slate-300">
+            <thead className="border-b border-[var(--app-border)] text-[var(--app-text-muted)]">
               <tr>
                 <th className="px-4 py-3">Tarefa</th>
                 <th className="px-4 py-3">Status</th>
@@ -61,7 +62,7 @@ export default async function ActivitiesPage() {
             </thead>
             <tbody>
               {(tasks ?? []).map((task) => (
-                <tr key={task.id} className="border-b border-white/5 text-slate-100">
+                <tr key={task.id} className="border-b border-[var(--app-border)] text-[var(--app-text)]">
                   <td className="px-4 py-3">{task.title}</td>
                   <td className="px-4 py-3">{task.completed ? "Concluida" : "Pendente"}</td>
                   <td className="px-4 py-3">
@@ -77,7 +78,8 @@ export default async function ActivitiesPage() {
             </tbody>
           </table>
         </section>
-      </div>
+      </PageWrapper>
     </AppShell>
   );
 }
+

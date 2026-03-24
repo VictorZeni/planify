@@ -1,4 +1,4 @@
-import type { Priority } from "@/lib/priority";
+﻿import type { Priority } from "@/lib/priority";
 
 type TaskForXp = {
   priority: Priority;
@@ -31,3 +31,4 @@ export function levelFromXp(totalXp: number) {
 
   return { level, xpInCurrentLevel, progressPercent };
 }
+

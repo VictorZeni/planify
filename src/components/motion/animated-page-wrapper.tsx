@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { AnimatePresence, motion } from "framer-motion";
 import { usePathname } from "next/navigation";
@@ -20,3 +20,4 @@ export function AnimatedPageWrapper({ children }: { children: React.ReactNode })
     </AnimatePresence>
   );
 }
+

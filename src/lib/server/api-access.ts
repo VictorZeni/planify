@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+﻿import { createClient } from "@/lib/supabase/server";
 import {
   apiError,
   apiForbidden,
@@ -37,7 +37,7 @@ export async function requireApiAccess(options: AccessOptions = {}) {
   if (options.requireAuthorized && !isAuthorized) {
     return {
       errorResponse: apiForbidden(
-        "Acesso restrito. Entre em contato para liberação.",
+        "Acesso restrito. Entre em contato para liberaÃ§Ã£o.",
       ),
     };
   }
@@ -52,3 +52,4 @@ export async function requireApiAccess(options: AccessOptions = {}) {
     access: { isAuthorized, isAdmin, billingStatus, isAuthorizedByPayment },
   };
 }
+

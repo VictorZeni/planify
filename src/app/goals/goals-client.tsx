@@ -1,9 +1,11 @@
-"use client";
+﻿"use client";
 
 import { FormEvent, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { SectionCard } from "@/components/ui/section-card";
 import { addDaysToDateInput, toDateInputValue } from "@/lib/date-utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 type Goal = {
   id: string;
@@ -42,7 +44,7 @@ export function GoalsClient({
   async function createGoal(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (title.trim().length < 3) {
-      setMessage("Titulo muito curto.");
+      setMessage("Título muito curto.");
       return;
     }
 
@@ -77,26 +79,19 @@ export function GoalsClient({
 
   return (
     <div className="space-y-6">
-      <SectionCard title="Nova meta" subtitle="Defina objetivos de curto, medio e longo prazo.">
+      <SectionCard title="Nova meta" subtitle="Defina objetivos de curto, médio e longo prazo.">
         <form onSubmit={createGoal} className="grid gap-3 md:grid-cols-2">
-          <input
+          <Input
             value={title}
             onChange={(event) => setTitle(event.target.value)}
-            placeholder="Ex.: Conseguir certificacao em 90 dias"
-            className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none ring-cyan-300 focus:ring-2"
+            placeholder="Ex.: Conseguir certificação em 90 dias"
           />
-          <input
+          <Input
             value={description}
             onChange={(event) => setDescription(event.target.value)}
-            placeholder="Descricao (opcional)"
-            className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none ring-cyan-300 focus:ring-2"
+            placeholder="Descrição (opcional)"
           />
-          <input
-            type="date"
-            value={targetDate}
-            onChange={(event) => setTargetDate(event.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none ring-cyan-300 focus:ring-2"
-          />
+          <Input type="date" value={targetDate} onChange={(event) => setTargetDate(event.target.value)} />
           <div className="flex flex-wrap gap-2">
             {[
               { label: "+30 dias", value: addDaysToDateInput(30) },
@@ -104,61 +99,49 @@ export function GoalsClient({
               { label: "+365 dias", value: addDaysToDateInput(365) },
               { label: "Hoje", value: toDateInputValue(new Date()) },
             ].map((preset) => (
-              <button
+              <Button
                 key={preset.label}
                 type="button"
                 onClick={() => setTargetDate(preset.value)}
-                className="rounded-md border border-slate-700 px-2 py-1 text-xs text-slate-200 transition hover:border-slate-500"
+                size="sm"
+                variant="secondary"
               >
                 {preset.label}
-              </button>
+              </Button>
             ))}
-            <button
-              type="button"
-              onClick={() => setTargetDate("")}
-              className="rounded-md border border-slate-700 px-2 py-1 text-xs text-slate-200 transition hover:border-slate-500"
-            >
+            <Button type="button" onClick={() => setTargetDate("")} size="sm" variant="secondary">
               Sem data
-            </button>
+            </Button>
           </div>
-          <button
-            type="submit"
-            className="rounded-lg bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300 md:col-span-2"
-          >
+          <Button type="submit" variant="primary" className="md:col-span-2">
             Salvar meta
-          </button>
+          </Button>
         </form>
       </SectionCard>
 
-      <SectionCard title="Metas ativas" subtitle="Acompanhe evolucao visualmente.">
+      <SectionCard title="Metas ativas" subtitle="Acompanhe evolução visualmente.">
         <div className="space-y-3">
           {goals.length === 0 ? (
-            <p className="text-sm text-slate-400">Nenhuma meta cadastrada.</p>
+            <p className="text-sm text-[var(--app-text-muted)]">Nenhuma meta cadastrada.</p>
           ) : (
             goals.map((goal) => {
               const p = progressMap.get(goal.id) ?? { total: 0, completed: 0 };
               const percent = p.total === 0 ? 0 : Math.round((p.completed / p.total) * 100);
               return (
-                <div
-                  key={goal.id}
-                  className="rounded-xl border border-slate-700 bg-slate-900/60 p-4"
-                >
-                  <p className="font-semibold text-slate-100">{goal.title}</p>
+                <div key={goal.id} className="rounded-xl border border-[var(--app-border)] bg-[var(--app-surface-soft)] p-4">
+                  <p className="font-semibold text-[var(--app-text)]">{goal.title}</p>
                   {goal.description ? (
-                    <p className="mt-1 text-sm text-slate-300">{goal.description}</p>
+                    <p className="mt-1 text-sm text-[var(--app-text-muted)]">{goal.description}</p>
                   ) : null}
                   {goal.target_date ? (
-                    <p className="mt-1 text-xs text-cyan-200">
+                    <p className="mt-1 text-xs text-[var(--app-primary-strong)]">
                       Data alvo: {new Date(`${goal.target_date}T00:00:00`).toLocaleDateString("pt-BR")}
                     </p>
                   ) : null}
-                  <div className="mt-3 h-2 rounded-full bg-slate-800">
-                    <div
-                      className="h-2 rounded-full bg-gradient-to-r from-cyan-400 to-lime-300"
-                      style={{ width: `${percent}%` }}
-                    />
+                  <div className="mt-3 h-2 rounded-full bg-white">
+                    <div className="h-2 rounded-full bg-gradient-to-r from-[var(--app-primary)] to-[#4ade80]" style={{ width: `${percent}%` }} />
                   </div>
-                  <p className="mt-2 text-xs text-slate-400">
+                  <p className="mt-2 text-xs text-[var(--app-text-muted)]">
                     Progresso: {percent}% ({p.completed}/{p.total} etapas)
                   </p>
                 </div>
@@ -166,8 +149,9 @@ export function GoalsClient({
             })
           )}
         </div>
-        {message ? <p className="mt-4 text-sm text-cyan-200">{message}</p> : null}
+        {message ? <p className="mt-4 text-sm text-[var(--app-primary-strong)]">{message}</p> : null}
       </SectionCard>
     </div>
   );
 }
+

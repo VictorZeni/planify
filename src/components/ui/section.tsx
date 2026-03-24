@@ -1,14 +1,17 @@
-﻿type SectionCardProps = {
+﻿import { Card } from "./card";
+
+type SectionProps = {
   title: string;
   subtitle?: string;
-  children: React.ReactNode;
   right?: React.ReactNode;
+  children: React.ReactNode;
+  className?: string;
 };
 
-export function SectionCard({ title, subtitle, children, right }: SectionCardProps) {
+export function Section({ title, subtitle, right, children, className }: SectionProps) {
   return (
-    <section className="rounded-xl border border-[var(--app-border)] bg-[var(--app-surface)] p-5 shadow-sm">
-      <div className="mb-4 flex items-start justify-between gap-3">
+    <Card className={className}>
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold text-[var(--app-text)]">{title}</h2>
           {subtitle ? <p className="mt-1 text-sm text-[var(--app-text-muted)]">{subtitle}</p> : null}
@@ -16,7 +19,7 @@ export function SectionCard({ title, subtitle, children, right }: SectionCardPro
         {right}
       </div>
       {children}
-    </section>
+    </Card>
   );
 }
 

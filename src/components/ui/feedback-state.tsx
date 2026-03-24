@@ -1,4 +1,4 @@
-type LoadingStateProps = {
+﻿type LoadingStateProps = {
   text?: string;
 };
 
@@ -8,16 +8,16 @@ type AlertStateProps = {
 };
 
 export function LoadingState({ text = "Carregando..." }: LoadingStateProps) {
-  return <p className="text-sm text-slate-300">{text}</p>;
+  return <p className="text-sm text-[var(--app-text-muted)]">{text}</p>;
 }
 
 export function AlertState({ text, tone = "info" }: AlertStateProps) {
   const toneClass =
     tone === "error"
-      ? "border-rose-500/40 bg-rose-500/10 text-rose-100"
+      ? "border-red-200 bg-[var(--app-danger-soft)] text-[var(--app-danger-text)]"
       : tone === "success"
-        ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-100"
-        : "border-slate-700 bg-slate-950 text-slate-200";
+        ? "border-green-200 bg-[var(--app-primary-soft)] text-[var(--app-primary-strong)]"
+        : "border-[var(--app-border)] bg-[var(--app-surface-soft)] text-[var(--app-text)]";
 
   return <p className={`rounded-lg border p-3 text-sm ${toneClass}`}>{text}</p>;
 }

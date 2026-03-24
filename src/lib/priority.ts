@@ -1,4 +1,4 @@
-export type Priority = "low" | "medium" | "high";
+﻿export type Priority = "low" | "medium" | "high";
 
 export function normalizePriority(value: string | null | undefined): Priority {
   if (!value) return "medium";
@@ -13,3 +13,4 @@ export function priorityLabel(priority: Priority): string {
   if (priority === "low") return "Baixa";
   return "Media";
 }
+

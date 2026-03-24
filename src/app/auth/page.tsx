@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { DEFAULT_KIWIFY_CHECKOUT_URL } from "@/lib/billing-config";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 function buildKiwifyCheckoutUrl(baseUrl: string, email: string) {
   try {
@@ -53,34 +55,24 @@ export default function AuthPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 px-6 py-10 text-slate-100">
-      <div className="mx-auto w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-6">
-        <Image
-          src="/planify-logo.svg"
-          alt="Planify"
-          width={220}
-          height={60}
-          className="h-auto w-40 object-contain"
-          priority
-        />
-        <p className="mt-2 text-xs uppercase tracking-[0.2em] text-cyan-300">
-          Organize. Execute. Evolua.
-        </p>
-        <h1 className="mt-3 text-2xl font-bold">Login</h1>
-        <p className="mt-2 text-sm text-slate-300">Use seu email e senha para acessar.</p>
+    <main className="min-h-screen bg-[var(--app-bg)] px-6 py-10 text-[var(--app-text)]">
+      <div className="mx-auto w-full max-w-md rounded-xl border border-[var(--app-border)] bg-white p-6 shadow-sm">
+        <Image src="/planify-logo.svg" alt="Planify" width={220} height={60} className="h-auto w-40 object-contain" priority />
+        <p className="mt-2 text-xs uppercase tracking-[0.2em] text-[var(--app-primary)]">Organize. Execute. Evolua.</p>
+        <h1 className="mt-3 text-2xl font-semibold">Login</h1>
+        <p className="mt-2 text-sm text-[var(--app-text-muted)]">Use seu email e senha para acessar.</p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>
             <label htmlFor="email" className="mb-1 block text-sm font-medium">
               Email
             </label>
-            <input
+            <Input
               id="email"
               type="email"
               required
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 outline-none ring-cyan-300 transition focus:ring-2"
             />
           </div>
 
@@ -88,50 +80,37 @@ export default function AuthPage() {
             <label htmlFor="password" className="mb-1 block text-sm font-medium">
               Senha
             </label>
-            <input
+            <Input
               id="password"
               type="password"
               minLength={6}
               required
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 outline-none ring-cyan-300 transition focus:ring-2"
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-lg bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-70"
-          >
+          <Button type="submit" variant="primary" className="w-full" disabled={loading}>
             {loading ? "Processando..." : "Entrar"}
-          </button>
+          </Button>
         </form>
 
-        <a
-          href={checkoutUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-4 inline-block text-sm text-cyan-300 underline underline-offset-4"
-        >
-          Nao tem conta? Cadastre-se aqui
+        <a href={checkoutUrl} target="_blank" rel="noreferrer" className="mt-4 inline-block text-sm text-[var(--app-primary)] underline underline-offset-4">
+          Não tem conta? Cadastre-se aqui
         </a>
-        <p className="mt-2 text-xs text-slate-400">
-          Ja pagou em uma pagina de vendas?{" "}
-          <a href="/compra-confirmada" className="text-emerald-300 underline underline-offset-4">
+        <p className="mt-2 text-xs text-[var(--app-text-muted)]">
+          Já pagou em uma página de vendas?{" "}
+          <a href="/compra-confirmada" className="text-[var(--app-primary)] underline underline-offset-4">
             Veja como acessar
           </a>
           .
         </p>
 
         {message ? (
-          <p className="mt-4 rounded-lg border border-slate-700 bg-slate-950 p-3 text-sm text-slate-200">
-            {message}
-          </p>
+          <p className="mt-4 rounded-lg border border-[var(--app-border)] bg-[var(--app-surface-soft)] p-3 text-sm text-[var(--app-text)]">{message}</p>
         ) : null}
       </div>
     </main>
   );
 }
-
 

@@ -1,4 +1,4 @@
-export type BillingStatus =
+﻿export type BillingStatus =
   | "manual"
   | "active"
   | "trialing"
@@ -10,4 +10,5 @@ export type BillingStatus =
 export function isPaymentActive(billingStatus: string | null | undefined) {
   return billingStatus === "active" || billingStatus === "trialing";
 }
+
 

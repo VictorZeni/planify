@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireApiAccess } from "@/lib/server/api-access";
 import { apiError, apiValidationError } from "@/lib/server/api-response";
@@ -79,3 +79,4 @@ export async function DELETE(request: Request) {
   if (error) return apiError(error.message, 400);
   return NextResponse.json({ ok: true });
 }
+

@@ -1,5 +1,6 @@
-import { AppShell } from "@/components/layout/app-shell";
+﻿import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/ui/page-header";
+import { PageWrapper } from "@/components/ui/page-wrapper";
 import { requireUserContext } from "@/lib/server/require-user";
 import { WeeklyClient } from "./weekly-client";
 
@@ -22,7 +23,7 @@ export default async function WeeklyPage() {
 
   return (
     <AppShell user={userCard}>
-      <div className="mx-auto w-full max-w-6xl space-y-6">
+      <PageWrapper>
         <PageHeader
           eyebrow="Planejamento semanal"
           title="Semana com clareza"
@@ -39,7 +40,8 @@ export default async function WeeklyPage() {
             } | null) ?? null
           }
         />
-      </div>
+      </PageWrapper>
     </AppShell>
   );
 }
+

@@ -1,4 +1,4 @@
-import crypto from "node:crypto";
+﻿import crypto from "node:crypto";
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isPaymentActive } from "@/lib/server/billing-status";
@@ -179,3 +179,4 @@ export async function POST(request: Request) {
 
   return NextResponse.json({ ok: true });
 }
+

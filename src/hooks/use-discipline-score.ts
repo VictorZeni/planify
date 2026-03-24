@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo } from "react";
 
@@ -17,3 +17,4 @@ export function useDisciplineScore({ completionRate, weeklyCompletions, streak }
     return { score: Math.max(0, Math.min(score, 100)) };
   }, [completionRate, weeklyCompletions, streak]);
 }
+

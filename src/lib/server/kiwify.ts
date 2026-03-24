@@ -1,4 +1,4 @@
-import crypto from "node:crypto";
+﻿import crypto from "node:crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { type BillingStatus, isPaymentActive } from "@/lib/server/billing-status";
 
@@ -149,3 +149,4 @@ export async function applyBillingToUser(params: {
 
   if (error) throw new Error(error.message);
 }
+

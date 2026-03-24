@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { getPhraseForToday } from "@/lib/motivation/phrases";
@@ -34,3 +34,4 @@ export function useDailyMotivation() {
 
   return { open, phrase, close };
 }
+

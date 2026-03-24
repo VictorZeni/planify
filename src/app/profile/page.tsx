@@ -1,6 +1,8 @@
-import { redirect } from "next/navigation";
+﻿import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/app-shell";
+import { PageHeader } from "@/components/ui/page-header";
+import { PageWrapper } from "@/components/ui/page-wrapper";
 import { ProfileClient } from "./profile-client";
 
 export default async function ProfilePage() {
@@ -37,11 +39,8 @@ export default async function ProfilePage() {
         isAuthorized: profileData?.is_authorized ?? false,
       }}
     >
-      <div className="mx-auto w-full max-w-5xl space-y-6">
-        <header className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
-          <p className="text-xs uppercase tracking-[0.2em] text-cyan-300">Perfil</p>
-          <h1 className="mt-2 text-2xl font-bold">Configuracoes da conta</h1>
-        </header>
+      <PageWrapper maxWidth="5xl">
+        <PageHeader eyebrow="Perfil" title="Configurações da conta" />
 
         <ProfileClient
           initialDisplayName={displayName}
@@ -49,7 +48,8 @@ export default async function ProfilePage() {
           initialAvatarUrl={avatarUrl}
           initialTheme={profileData?.theme ?? "foco"}
         />
-      </div>
+      </PageWrapper>
     </AppShell>
   );
 }
+

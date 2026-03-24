@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 
 export function apiError(message: string, status = 400, details?: unknown) {
   return NextResponse.json(
@@ -18,4 +18,5 @@ export function apiForbidden(message = "Acesso restrito.") {
 export function apiValidationError(details?: unknown) {
   return apiError("Invalid payload", 422, details);
 }
+
 

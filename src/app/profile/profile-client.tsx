@@ -1,7 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { DEFAULT_THEME, isThemeName, THEMES, type ThemeName } from "@/lib/theme";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 type ProfileClientProps = {
   initialDisplayName: string;
@@ -75,9 +77,9 @@ export function ProfileClient({
   }
 
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
-      <h2 className="text-xl font-semibold text-white">Perfil do usuario</h2>
-      <p className="mt-1 text-sm text-slate-300">{initialEmail}</p>
+    <section className="rounded-xl border border-[var(--app-border)] bg-white p-6 shadow-sm">
+      <h2 className="text-xl font-semibold text-[var(--app-text)]">Perfil do usuário</h2>
+      <p className="mt-1 text-sm text-[var(--app-text-muted)]">{initialEmail}</p>
 
       <div className="mt-6 flex items-center gap-4">
         {avatarUrl ? (
@@ -88,11 +90,11 @@ export function ProfileClient({
             className="h-16 w-16 rounded-full object-cover"
           />
         ) : (
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-cyan-500/20 text-lg font-bold text-cyan-200">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--app-primary-soft)] text-lg font-bold text-[var(--app-primary-strong)]">
             {displayName.slice(0, 2).toUpperCase()}
           </div>
         )}
-        <label className="rounded-lg border border-slate-700 px-3 py-2 text-sm text-slate-200 transition hover:border-slate-500">
+        <label className="inline-flex h-10 cursor-pointer items-center rounded-lg border border-[var(--app-border)] bg-white px-3 text-sm text-[var(--app-text)] transition-all hover:bg-[var(--app-surface-soft)]">
           Upload de imagem
           <input
             type="file"
@@ -107,14 +109,10 @@ export function ProfileClient({
       </div>
 
       <div className="mt-6 grid gap-3 md:max-w-xl">
-        <label className="text-sm text-slate-300">Nome de exibicao</label>
-        <input
-          value={displayName}
-          onChange={(event) => setDisplayName(event.target.value)}
-          className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none ring-cyan-300 transition focus:ring-2"
-        />
+        <label className="text-sm text-[var(--app-text-muted)]">Nome de exibição</label>
+        <Input value={displayName} onChange={(event) => setDisplayName(event.target.value)} />
 
-        <label className="mt-2 text-sm text-slate-300">Tema visual (psicologia das cores)</label>
+        <label className="mt-2 text-sm text-[var(--app-text-muted)]">Tema visual (psicologia das cores)</label>
         <div className="grid gap-2">
           {THEMES.map((item) => {
             const selected = theme === item.id;
@@ -126,30 +124,32 @@ export function ProfileClient({
                   setTheme(item.id);
                   applyTheme(item.id);
                 }}
-                className={`rounded-lg border px-3 py-2 text-left transition ${
+                className={`rounded-lg border px-3 py-2 text-left transition-all ${
                   selected
-                    ? "border-cyan-400/50 bg-cyan-400/10"
-                    : "border-slate-700 bg-slate-950 hover:border-slate-500"
+                    ? "border-[var(--app-primary)] bg-[var(--app-primary-soft)]"
+                    : "border-[var(--app-border)] bg-white hover:bg-[var(--app-surface-soft)]"
                 }`}
               >
-                <p className="text-sm font-semibold text-slate-100">{item.label}</p>
-                <p className="text-xs text-slate-300">{item.description}</p>
+                <p className="text-sm font-semibold text-[var(--app-text)]">{item.label}</p>
+                <p className="text-xs text-[var(--app-text-muted)]">{item.description}</p>
               </button>
             );
           })}
         </div>
 
-        <button
+        <Button
           type="button"
           onClick={() => void handleSaveProfile()}
           disabled={loading}
-          className="mt-2 rounded-lg bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-70"
+          variant="primary"
+          className="mt-2"
         >
           {loading ? "Salvando..." : "Salvar perfil"}
-        </button>
+        </Button>
       </div>
 
-      {message ? <p className="mt-4 text-sm text-cyan-200">{message}</p> : null}
+      {message ? <p className="mt-4 text-sm text-[var(--app-primary-strong)]">{message}</p> : null}
     </section>
   );
 }
+

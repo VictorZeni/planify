@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireAdminApi } from "@/lib/server/require-admin";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -17,7 +17,7 @@ export async function PATCH(
   context: { params: Promise<{ id: string }> },
 ) {
   if (process.env.ALLOW_MANUAL_AUTHORIZATION !== "true") {
-    return apiForbidden("Liberação manual desativada. Acesso apenas via pagamento.");
+    return apiForbidden("LiberaÃ§Ã£o manual desativada. Acesso apenas via pagamento.");
   }
 
   const adminGuard = await requireAdminApi();
@@ -55,3 +55,4 @@ export async function PATCH(
     },
   });
 }
+

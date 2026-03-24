@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+﻿import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { resolveAccess } from "@/lib/server/access-state";
 
@@ -61,3 +61,4 @@ export async function requireUserContext() {
     },
   };
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { AlertTriangle } from "lucide-react";
 import { useCountdown } from "@/hooks/use-countdown";
@@ -16,9 +16,10 @@ export function CountdownBadge({ deadline, priority }: CountdownBadgeProps) {
   if (!countdown.isUrgent && !countdown.isExpired) return null;
 
   return (
-    <span className="inline-flex items-center gap-1 rounded-md border border-rose-700 bg-rose-950/50 px-2 py-0.5 text-[10px] font-semibold text-rose-200">
+    <span className="inline-flex items-center gap-1 rounded-md border border-red-200 bg-[var(--app-danger-soft)] px-2 py-0.5 text-[10px] font-semibold text-[var(--app-danger-text)]">
       <AlertTriangle className="h-3 w-3" />
       {countdown.isExpired ? "Prazo vencido" : countdown.label}
     </span>
   );
 }
+

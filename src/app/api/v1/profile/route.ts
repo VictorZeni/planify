@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireApiAccess } from "@/lib/server/api-access";
 import { apiError, apiValidationError } from "@/lib/server/api-response";
@@ -78,3 +78,4 @@ export async function PATCH(request: Request) {
     data: { displayName, firstName, lastName, gender, theme: theme ?? DEFAULT_THEME },
   });
 }
+

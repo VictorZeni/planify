@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+﻿import { describe, expect, it } from "vitest";
 import { normalizePriority, priorityLabel } from "./priority";
 
 describe("normalizePriority", () => {
@@ -19,4 +19,5 @@ describe("priorityLabel", () => {
     expect(priorityLabel("low")).toBe("Baixa");
   });
 });
+
 

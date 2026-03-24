@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+﻿import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
 export async function createClient() {
@@ -23,3 +23,4 @@ export async function createClient() {
     },
   });
 }
+

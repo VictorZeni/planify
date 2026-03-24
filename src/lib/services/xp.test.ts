@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+﻿import { describe, expect, it } from "vitest";
 import { calculateXP, levelFromXp } from "./xp";
 
 describe("calculateXP", () => {
@@ -30,4 +30,5 @@ describe("levelFromXp", () => {
     });
   });
 });
+
 

@@ -1,9 +1,10 @@
-export default function GlobalLoading() {
+﻿export default function GlobalLoading() {
   return (
-    <main className="min-h-screen bg-slate-950 px-6 py-10 text-slate-100">
-      <div className="mx-auto w-full max-w-2xl rounded-2xl border border-slate-800 bg-slate-900 p-6">
-        <p className="text-sm text-slate-300">Carregando...</p>
+    <main className="min-h-screen bg-[var(--app-bg)] px-6 py-10 text-[var(--app-text)]">
+      <div className="mx-auto w-full max-w-2xl rounded-xl border border-[var(--app-border)] bg-white p-6 shadow-sm">
+        <p className="text-sm text-[var(--app-text-muted)]">Carregando...</p>
       </div>
     </main>
   );
 }
+

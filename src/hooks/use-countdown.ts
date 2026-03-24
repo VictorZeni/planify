@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
 
@@ -81,3 +81,4 @@ export function useCountdown(deadline: string | null) {
 
   return { ...state, label };
 }
+

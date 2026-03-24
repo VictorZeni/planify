@@ -1,6 +1,7 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 export function CheckoutButton() {
   const [loading, setLoading] = useState(false);
@@ -34,16 +35,17 @@ export function CheckoutButton() {
 
   return (
     <div className="space-y-3">
-      <button
+      <Button
         type="button"
         onClick={() => void handleCheckout()}
         disabled={loading}
-        className="w-full rounded-lg bg-emerald-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:opacity-70"
+        variant="primary"
+        className="w-full"
       >
         {loading ? "Redirecionando..." : "Desbloquear acesso com pagamento"}
-      </button>
+      </Button>
       {message ? (
-        <p className="rounded-lg border border-slate-700 bg-slate-950 p-3 text-sm text-slate-200">
+        <p className="rounded-lg border border-[var(--app-border)] bg-[var(--app-surface-soft)] p-3 text-sm text-[var(--app-text)]">
           {message}
         </p>
       ) : null}

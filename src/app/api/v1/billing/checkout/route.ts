@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { createStripeCheckoutSession } from "@/lib/server/stripe";
 import { requireApiAccess } from "@/lib/server/api-access";
 import { apiError } from "@/lib/server/api-response";
@@ -53,3 +53,4 @@ export async function POST() {
     return apiError(message, 400);
   }
 }
+

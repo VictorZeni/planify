@@ -1,8 +1,10 @@
-"use client";
+﻿"use client";
 
 import { FormEvent, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { SectionCard } from "@/components/ui/section-card";
+import { Button } from "@/components/ui/button";
+import { Input, Textarea } from "@/components/ui/input";
 
 type WeeklyPlan = {
   id: string;
@@ -58,58 +60,43 @@ export function WeeklyClient({ initialPlan }: { initialPlan: WeeklyPlan | null }
   }
 
   return (
-    <SectionCard
-      title="Planejamento semanal"
-      subtitle="Defina meta da semana, tarefas principais e revisão."
-    >
+    <SectionCard title="Planejamento semanal" subtitle="Defina meta da semana, tarefas principais e revisão.">
       <form onSubmit={savePlan} className="space-y-4">
         <div>
-          <label className="mb-1 block text-sm text-slate-300">Meta da semana</label>
-          <input
-            value={goal}
-            onChange={(event) => setGoal(event.target.value)}
-            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none ring-cyan-300 focus:ring-2"
-          />
+          <label className="mb-1 block text-sm text-[var(--app-text-muted)]">Meta da semana</label>
+          <Input value={goal} onChange={(event) => setGoal(event.target.value)} />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm text-slate-300">Top 3 tarefas</label>
+          <label className="mb-1 block text-sm text-[var(--app-text-muted)]">Top 3 tarefas</label>
           <div className="grid gap-2 md:grid-cols-3">
             {tasks.map((task, index) => (
-              <input
+              <Input
                 key={`weekly-task-${index}`}
                 value={task}
                 onChange={(event) =>
                   setTasks((prev) => prev.map((item, i) => (i === index ? event.target.value : item)))
                 }
-                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none ring-cyan-300 focus:ring-2"
               />
             ))}
           </div>
         </div>
 
         <div>
-          <label className="mb-1 block text-sm text-slate-300">Revisão semanal</label>
-          <textarea
-            value={review}
-            onChange={(event) => setReview(event.target.value)}
-            rows={4}
-            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none ring-cyan-300 focus:ring-2"
-          />
+          <label className="mb-1 block text-sm text-[var(--app-text-muted)]">Revisão semanal</label>
+          <Textarea value={review} onChange={(event) => setReview(event.target.value)} rows={4} />
         </div>
 
-        <button
-          type="submit"
-          className="rounded-lg bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
-        >
+        <Button type="submit" variant="primary">
           Salvar semana
-        </button>
+        </Button>
       </form>
 
       {plan ? (
-        <p className="mt-4 text-xs text-slate-400">Semana referência: {plan.week_start}</p>
+        <p className="mt-4 text-xs text-[var(--app-text-muted)]">Semana referência: {plan.week_start}</p>
       ) : null}
-      {message ? <p className="mt-2 text-sm text-cyan-200">{message}</p> : null}
+      {message ? <p className="mt-2 text-sm text-[var(--app-primary-strong)]">{message}</p> : null}
     </SectionCard>
   );
 }
+

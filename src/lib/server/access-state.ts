@@ -1,4 +1,4 @@
-import { type BillingStatus, isPaymentActive } from "@/lib/server/billing-status";
+﻿import { type BillingStatus, isPaymentActive } from "@/lib/server/billing-status";
 
 type AccessProfile = {
   is_admin?: boolean | null;
@@ -22,3 +22,4 @@ export function resolveAccess(profile: AccessProfile | null | undefined) {
     isAuthorizedByPayment,
   };
 }
+

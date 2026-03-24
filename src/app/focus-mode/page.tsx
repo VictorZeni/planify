@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+﻿import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { FocusModeClient } from "./focus-mode-client";
 
@@ -33,3 +33,4 @@ export default async function FocusModePage({ searchParams }: FocusModePageProps
 
   return <FocusModeClient taskId={task.id} taskTitle={task.title} />;
 }
+

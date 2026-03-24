@@ -14,6 +14,7 @@ import { StreakIndicator } from "@/components/dashboard/streak-indicator";
 import { DisciplineScore } from "@/components/dashboard/discipline-score";
 import { RecoveryBanner } from "@/components/dashboard/recovery-banner";
 import { LineProductivityChart } from "@/components/dashboard/line-productivity-chart";
+import { PageWrapper } from "@/components/ui/page-wrapper";
 
 type TaskRow = {
   id: string;
@@ -200,8 +201,8 @@ export default async function DashboardPage() {
         isAuthorized: profileData?.is_authorized ?? false,
       }}
     >
-      <div className="mx-auto w-full max-w-6xl space-y-6">
-        <header className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
+      <PageWrapper>
+        <header className="planify-surface flex items-center justify-between p-6">
           <div>
             <Image
               src="/planify-logo.svg"
@@ -211,14 +212,14 @@ export default async function DashboardPage() {
               className="h-auto w-44 object-contain"
               priority
             />
-            <p className="mt-3 text-sm font-semibold text-cyan-200">
+            <p className="mt-3 text-sm font-semibold text-[var(--app-primary)]">
               Olá, {profileData?.display_name ?? fallbackDisplayName}!
             </p>
-            <h1 className="mt-2 text-2xl font-bold">Painel de execução e consistência</h1>
-            <p className="mt-1 bg-gradient-to-r from-cyan-300 to-emerald-300 bg-clip-text text-sm font-semibold text-transparent">
+            <h1 className="mt-2 text-2xl font-semibold">Painel de execução e consistência</h1>
+            <p className="mt-1 text-sm font-semibold text-[var(--app-primary)]">
               Organize. Execute. Evolua.
             </p>
-            <p className="mt-1 text-sm text-slate-300">{user.email}</p>
+            <p className="mt-1 text-sm text-[var(--app-text-muted)]">{user.email}</p>
           </div>
           <LogoutButton />
         </header>
@@ -231,13 +232,13 @@ export default async function DashboardPage() {
         ) : null}
 
         {procrastinatedTask ? (
-          <section className="rounded-2xl border border-rose-500/40 bg-rose-500/10 p-4 text-rose-100">
+          <section className="rounded-xl border border-red-200 bg-[var(--app-danger-soft)] p-4 text-[var(--app-danger-text)]">
             <p className="text-sm font-semibold">
               Você está adiando isso. Que tal começar com 10 minutos?
             </p>
             <Link
               href={`/focus-mode?taskId=${procrastinatedTask.id}`}
-              className="mt-3 inline-block rounded-lg border border-rose-300/50 bg-rose-200/10 px-3 py-1.5 text-xs font-semibold text-rose-100 transition hover:bg-rose-200/20"
+              className="mt-3 inline-block rounded-lg border border-red-300 bg-white px-3 py-1.5 text-xs font-semibold text-[var(--app-danger-text)] transition hover:bg-red-50"
             >
               Começar agora
             </Link>
@@ -294,9 +295,9 @@ export default async function DashboardPage() {
               weeklyCompletions={currentWeekDone}
               streak={streak}
             />
-            <section className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md">
-              <p className="text-xs uppercase tracking-[0.2em] text-cyan-300">Missão do Dia</p>
-              <p className="mt-2 text-sm text-slate-200">
+            <section className="rounded-xl border border-[var(--app-border)] bg-white p-5 shadow-sm">
+              <p className="text-xs uppercase tracking-[0.2em] text-[var(--app-primary)]">Missão do Dia</p>
+              <p className="mt-2 text-sm text-[var(--app-text-muted)]">
                 {missionTasks.length > 0
                   ? `${missionDone}/${missionTasks.length} concluídas nas 3 tarefas principais.`
                   : "Selecione 3 tarefas principais para hoje."}
@@ -306,10 +307,11 @@ export default async function DashboardPage() {
         </section>
 
         <TasksPanel />
-      </div>
+      </PageWrapper>
     </AppShell>
   );
 }
+
 
 
 

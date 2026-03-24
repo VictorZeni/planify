@@ -1,5 +1,6 @@
-import { AppShell } from "@/components/layout/app-shell";
+﻿import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/ui/page-header";
+import { PageWrapper } from "@/components/ui/page-wrapper";
 import { requireUserContext } from "@/lib/server/require-user";
 import { NotesClient } from "./notes-client";
 
@@ -22,14 +23,15 @@ export default async function NotesPage() {
 
   return (
     <AppShell user={userCard}>
-      <div className="mx-auto w-full max-w-6xl space-y-6">
+      <PageWrapper>
         <PageHeader
           eyebrow="Anotações"
           title="Base de conhecimento pessoal"
           description="Centralize ideias, aprendizados e referências."
         />
         <NotesClient initialNotes={(notes ?? []) as NoteRow[]} />
-      </div>
+      </PageWrapper>
     </AppShell>
   );
 }
+

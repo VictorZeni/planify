@@ -57,12 +57,12 @@ export function AppSidebar({ user }: AppSidebarProps) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed left-4 top-4 z-40 rounded-lg border border-white/20 bg-slate-900/70 p-2 text-slate-100 backdrop-blur-md md:hidden"
+        className="fixed left-4 top-20 z-40 rounded-lg border border-[var(--app-border)] bg-[var(--app-surface)] p-2 text-[var(--app-text)] shadow-sm md:hidden"
       >
         <Menu className="h-5 w-5" />
       </button>
 
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-72 border-r border-white/10 bg-slate-950/90 p-4 backdrop-blur-md md:block">
+      <aside className="fixed inset-y-0 left-0 top-[61px] z-30 hidden w-72 border-r border-[var(--app-border)] bg-[var(--app-surface)] p-4 md:block">
         <SidebarContent pathname={pathname} user={user} />
       </aside>
 
@@ -73,13 +73,13 @@ export function AppSidebar({ user }: AppSidebarProps) {
             animate={{ x: 0 }}
             exit={{ x: -320 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-y-0 left-0 z-50 w-72 border-r border-white/10 bg-slate-950 p-4 md:hidden"
+            className="fixed inset-y-0 left-0 top-[61px] z-50 w-72 border-r border-[var(--app-border)] bg-[var(--app-surface)] p-4 md:hidden"
           >
             <div className="mb-4 flex justify-end">
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="rounded-md border border-white/20 p-1 text-slate-100"
+                className="rounded-md border border-[var(--app-border)] p-1 text-[var(--app-text)]"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -103,7 +103,7 @@ function SidebarContent({
 }) {
   return (
     <div className="flex h-full flex-col">
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
+      <div className="rounded-xl border border-[var(--app-border)] bg-[var(--app-surface-soft)] p-3">
         <Image
           src="/planify-logo.svg"
           alt="Planify"
@@ -112,7 +112,7 @@ function SidebarContent({
           className="h-auto w-40 object-contain"
           priority
         />
-        <p className="mt-1 text-sm text-slate-300">Organize. Execute. Evolua.</p>
+        <p className="mt-1 text-sm text-[var(--app-text-muted)]">Organize. Execute. Evolua.</p>
       </div>
 
       <nav className="mt-6 space-y-2">
@@ -126,8 +126,8 @@ function SidebarContent({
               onClick={onNavigate}
               className={`group flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-all ${
                 active
-                  ? "border border-cyan-400/40 bg-cyan-500/10 text-cyan-200"
-                  : "border border-transparent text-slate-300 hover:border-white/10 hover:bg-white/5 hover:text-white"
+                  ? "border border-[var(--app-primary)] bg-[var(--app-primary-soft)] text-[var(--app-primary-strong)]"
+                  : "border border-transparent text-[var(--app-text-muted)] hover:border-[var(--app-border)] hover:bg-[var(--app-surface-soft)] hover:text-[var(--app-text)]"
               }`}
             >
               <Icon className="h-4 w-4 transition-transform group-hover:scale-110" />
@@ -137,7 +137,7 @@ function SidebarContent({
         })}
       </nav>
 
-      <div className="mt-auto rounded-2xl border border-white/10 bg-white/5 p-3">
+      <div className="mt-auto rounded-xl border border-[var(--app-border)] bg-[var(--app-surface-soft)] p-3">
         <div className="flex items-center gap-3">
           {user.avatarUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -147,19 +147,19 @@ function SidebarContent({
               className="h-10 w-10 rounded-full object-cover"
             />
           ) : (
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500/20 text-xs font-bold text-cyan-200">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--app-primary-soft)] text-xs font-bold text-[var(--app-primary-strong)]">
               {user.displayName.slice(0, 2).toUpperCase()}
             </div>
           )}
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-slate-100">{user.displayName}</p>
-            <p className="truncate text-xs text-slate-400">{user.email}</p>
+            <p className="truncate text-sm font-semibold text-[var(--app-text)]">{user.displayName}</p>
+            <p className="truncate text-xs text-[var(--app-text-muted)]">{user.email}</p>
           </div>
         </div>
         <Link
           href="/profile"
           onClick={onNavigate}
-          className="mt-3 inline-block rounded-lg border border-cyan-400/40 bg-cyan-500/10 px-3 py-1.5 text-xs font-semibold text-cyan-200 transition hover:bg-cyan-500/20"
+          className="mt-3 inline-flex h-8 w-full items-center justify-center rounded-lg border border-[var(--app-border)] bg-[var(--app-surface)] px-3 text-xs font-medium text-[var(--app-text)] transition-all hover:bg-[var(--app-surface-soft)]"
         >
           Editar perfil
         </Link>
@@ -167,5 +167,6 @@ function SidebarContent({
     </div>
   );
 }
+
 
 

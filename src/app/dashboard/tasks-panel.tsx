@@ -8,6 +8,8 @@ import { normalizePriority, type Priority } from "@/lib/priority";
 import { DailyMission } from "@/components/dashboard/daily-mission";
 import { AlertState, LoadingState } from "@/components/ui/feedback-state";
 import { addDaysToDateInput, dateInputToEndOfDayIso, toDateInputValue } from "@/lib/date-utils";
+import { Button } from "@/components/ui/button";
+import { Input, Select } from "@/components/ui/input";
 
 type Category = {
   id: string;
@@ -33,9 +35,9 @@ type TaskFormState = {
 };
 
 const defaultCategoryColors: Record<string, string> = {
-  pessoal: "#06B6D4",
-  estudo: "#22C55E",
-  trabalho: "#F59E0B",
+  pessoal: "#22c55e",
+  estudo: "#16a34a",
+  trabalho: "#65a30d",
 };
 
 const initialFormState: TaskFormState = {
@@ -171,7 +173,7 @@ export function TasksPanel() {
       return "Título deve ter ao menos 3 caracteres.";
     }
 
-      if (state.deadline) {
+    if (state.deadline) {
       const parsed = new Date(`${state.deadline}T00:00:00`);
       if (Number.isNaN(parsed.getTime())) {
         return "Prazo invalido.";
@@ -328,10 +330,10 @@ export function TasksPanel() {
   );
 
   return (
-    <section className="space-y-6 rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
+    <section className="space-y-6 rounded-xl border border-[var(--app-border)] bg-white p-6 shadow-sm">
       <div>
-        <h2 className="text-xl font-semibold">Suas tarefas</h2>
-        <p className="mt-1 text-sm text-slate-300">
+        <h2 className="text-xl font-semibold text-[var(--app-text)]">Suas tarefas</h2>
+        <p className="mt-1 text-sm text-[var(--app-text-muted)]">
           Foque no progresso diário. Cada tarefa concluída fortalece sua consistência.
         </p>
       </div>
@@ -342,19 +344,18 @@ export function TasksPanel() {
       />
 
       <form onSubmit={handleCreateTask} className="grid gap-3 md:grid-cols-5">
-        <input
+        <Input
           type="text"
           placeholder="Ex.: Estudar React por 30 min"
           value={form.title}
           onChange={(event) => updateFormField("title", event.target.value)}
           required
-          className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none ring-cyan-300 transition focus:ring-2 md:col-span-2"
+          className="md:col-span-2"
         />
-        <input
+        <Input
           type="date"
           value={form.deadline}
           onChange={(event) => updateFormField("deadline", event.target.value)}
-          className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none ring-cyan-300 transition focus:ring-2"
         />
         <div className="flex flex-wrap gap-2 md:col-span-2">
           {[
@@ -363,87 +364,72 @@ export function TasksPanel() {
             { label: "+3 dias", value: addDaysToDateInput(3) },
             { label: "+7 dias", value: addDaysToDateInput(7) },
           ].map((preset) => (
-            <button
+            <Button
               key={preset.label}
               type="button"
               onClick={() => updateFormField("deadline", preset.value)}
-              className="rounded-md border border-slate-700 px-2 py-1 text-xs text-slate-200 transition hover:border-slate-500"
+              variant="secondary"
+              size="sm"
             >
               {preset.label}
-            </button>
+            </Button>
           ))}
-          <button
+          <Button
             type="button"
             onClick={() => updateFormField("deadline", "")}
-            className="rounded-md border border-slate-700 px-2 py-1 text-xs text-slate-200 transition hover:border-slate-500"
+            variant="secondary"
+            size="sm"
           >
             Sem prazo
-          </button>
+          </Button>
         </div>
-        <select
-          value={form.category}
-          onChange={(event) => updateFormField("category", event.target.value)}
-          className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none ring-cyan-300 transition focus:ring-2"
-        >
+        <Select value={form.category} onChange={(event) => updateFormField("category", event.target.value)}>
           <option value="">Sem categoria</option>
           {categories.map((category) => (
             <option key={category.id} value={category.id}>
               {category.name}
             </option>
           ))}
-        </select>
-        <select
-          value={form.priority}
-          onChange={(event) => updateFormField("priority", event.target.value as Priority)}
-          className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none ring-cyan-300 transition focus:ring-2"
-        >
+        </Select>
+        <Select value={form.priority} onChange={(event) => updateFormField("priority", event.target.value as Priority)}>
           <option value="low">Prioridade: Baixa</option>
-          <option value="medium">Prioridade: Media</option>
+          <option value="medium">Prioridade: Média</option>
           <option value="high">Prioridade: Alta</option>
-        </select>
-        <button
-          type="submit"
-          disabled={saving}
-          className="rounded-lg bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition duration-200 hover:bg-cyan-300 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70 md:col-span-5"
-        >
+        </Select>
+        <Button type="submit" disabled={saving} variant="primary" className="md:col-span-5">
           {saving ? "Salvando..." : "Criar tarefa"}
-        </button>
+        </Button>
       </form>
 
       <div className="grid gap-3 md:grid-cols-3">
-        <select
+        <Select
           value={statusFilter}
           onChange={(event) => setStatusFilter(event.target.value as "all" | "open" | "done")}
-          className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none ring-cyan-300 transition focus:ring-2"
         >
           <option value="all">Todos os status</option>
           <option value="open">Pendentes</option>
           <option value="done">Concluídas</option>
-        </select>
+        </Select>
 
-        <select
-          value={categoryFilter}
-          onChange={(event) => setCategoryFilter(event.target.value)}
-          className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none ring-cyan-300 transition focus:ring-2"
-        >
+        <Select value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)}>
           <option value="">Todas categorias</option>
           {categories.map((category) => (
             <option key={category.id} value={category.id}>
               {category.name}
             </option>
           ))}
-        </select>
+        </Select>
 
-        <button
+        <Button
           type="button"
           onClick={() => {
             setStatusFilter("all");
             setCategoryFilter("");
           }}
-          className="rounded-lg border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-200 transition duration-200 hover:border-slate-500 active:scale-[0.99]"
+          variant="secondary"
         >
           Limpar filtros
-        </button>
+        </Button>
       </div>
 
       <AnimatePresence>
@@ -456,7 +442,7 @@ export function TasksPanel() {
             onAnimationComplete={() => {
               window.setTimeout(() => setXpPulse(null), 1200);
             }}
-            className="rounded-lg border border-cyan-400/40 bg-cyan-400/10 p-3 text-sm font-semibold text-cyan-200"
+            className="rounded-lg border border-green-200 bg-[var(--app-primary-soft)] p-3 text-sm font-semibold text-[var(--app-primary-strong)]"
           >
             +{xpPulse} XP conquistado
           </motion.div>
@@ -504,3 +490,4 @@ export function TasksPanel() {
     </section>
   );
 }
+

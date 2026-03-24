@@ -1,8 +1,10 @@
-"use client";
+﻿"use client";
 
 import { FormEvent, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { SectionCard } from "@/components/ui/section-card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 type Habit = {
   id: string;
@@ -109,30 +111,23 @@ export function HabitsClient({
 
   return (
     <div className="space-y-6">
-      <SectionCard
-        title="Novo hábito"
-        subtitle="Construa consistência diária com pequenas ações."
-      >
+      <SectionCard title="Novo hábito" subtitle="Construa consistência diária com pequenas ações.">
         <form onSubmit={createHabit} className="flex flex-col gap-3 md:flex-row">
-          <input
+          <Input
             value={name}
             onChange={(event) => setName(event.target.value)}
             placeholder="Ex.: Ler 20 minutos"
-            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none ring-cyan-300 focus:ring-2"
           />
-          <button
-            type="submit"
-            className="rounded-lg bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
-          >
+          <Button type="submit" variant="primary">
             Criar
-          </button>
+          </Button>
         </form>
       </SectionCard>
 
       <SectionCard title="Tracker de hábitos" subtitle="Marque sua execução de hoje.">
         <div className="space-y-3">
           {habits.length === 0 ? (
-            <p className="text-sm text-slate-400">Nenhum hábito ainda.</p>
+            <p className="text-sm text-[var(--app-text-muted)]">Nenhum hábito ainda.</p>
           ) : (
             habits.map((habit) => {
               const doneToday = checkins.some(
@@ -143,26 +138,20 @@ export function HabitsClient({
               ).length;
 
               return (
-                <div
-                  key={habit.id}
-                  className="rounded-xl border border-slate-700 bg-slate-900/60 p-4"
-                >
+                <div key={habit.id} className="rounded-xl border border-[var(--app-border)] bg-[var(--app-surface-soft)] p-4">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div>
-                      <p className="font-semibold text-slate-100">{habit.name}</p>
-                      <p className="text-xs text-slate-400">Consistência semanal: {weekHits}/7</p>
+                      <p className="font-semibold text-[var(--app-text)]">{habit.name}</p>
+                      <p className="text-xs text-[var(--app-text-muted)]">Consistência semanal: {weekHits}/7</p>
                     </div>
-                    <button
+                    <Button
                       type="button"
                       onClick={() => void toggleCheckin(habit.id)}
-                      className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
-                        doneToday
-                          ? "border border-emerald-600 bg-emerald-500/20 text-emerald-200"
-                          : "border border-slate-600 text-slate-200 hover:border-slate-400"
-                      }`}
+                      size="sm"
+                      variant={doneToday ? "primary" : "secondary"}
                     >
                       {doneToday ? "Feito hoje" : "Marcar hoje"}
-                    </button>
+                    </Button>
                   </div>
                 </div>
               );
@@ -170,8 +159,9 @@ export function HabitsClient({
           )}
         </div>
 
-        {message ? <p className="mt-4 text-sm text-cyan-200">{message}</p> : null}
+        {message ? <p className="mt-4 text-sm text-[var(--app-primary-strong)]">{message}</p> : null}
       </SectionCard>
     </div>
   );
 }
+

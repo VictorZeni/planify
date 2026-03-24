@@ -1,8 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 type FocusModeClientProps = {
   taskId: string;
@@ -54,53 +55,38 @@ export function FocusModeClient({
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-950 p-6 text-slate-100">
+    <main className="flex min-h-screen items-center justify-center bg-[var(--app-bg)] p-6 text-[var(--app-text)]">
       <motion.section
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25 }}
-        className="w-full max-w-2xl rounded-3xl border border-white/10 bg-white/5 p-8 text-center backdrop-blur-md"
+        className="w-full max-w-2xl rounded-xl border border-[var(--app-border)] bg-white p-8 text-center shadow-sm"
       >
-        <p className="text-xs uppercase tracking-[0.2em] text-cyan-300">Modo Foco</p>
-        <h1 className="mt-3 text-2xl font-bold">{taskTitle}</h1>
-        <p className="mt-2 text-sm text-slate-300">Agora só existe essa tarefa.</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-[var(--app-primary)]">Modo Foco</p>
+        <h1 className="mt-3 text-2xl font-semibold">{taskTitle}</h1>
+        <p className="mt-2 text-sm text-[var(--app-text-muted)]">Agora só existe essa tarefa.</p>
 
-        <p className="mt-8 text-6xl font-black tracking-tight text-cyan-300">{timeLabel}</p>
+        <p className="mt-8 text-6xl font-semibold tracking-tight text-[var(--app-primary)]">{timeLabel}</p>
 
         <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <button
-            type="button"
-            onClick={() => setRunning((v) => !v)}
-            className="rounded-lg border border-slate-600 px-4 py-2 text-sm font-semibold transition hover:border-slate-400"
-          >
+          <Button variant="secondary" onClick={() => setRunning((v) => !v)}>
             {running ? "Pausar" : "Retomar"}
-          </button>
-          <button
-            type="button"
-            onClick={() => setSecondsLeft(initialMinutes * 60)}
-            className="rounded-lg border border-slate-600 px-4 py-2 text-sm font-semibold transition hover:border-slate-400"
-          >
+          </Button>
+          <Button variant="secondary" onClick={() => setSecondsLeft(initialMinutes * 60)}>
             Reiniciar
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push("/dashboard")}
-            className="rounded-lg border border-rose-700 px-4 py-2 text-sm font-semibold text-rose-200 transition hover:border-rose-500"
-          >
+          </Button>
+          <Button variant="danger" onClick={() => router.push("/dashboard")}>
             Encerrar antes
-          </button>
+          </Button>
         </div>
 
-          <button
-            type="button"
-            onClick={() => void completeTask()}
-            className="mt-6 rounded-lg bg-cyan-400 px-5 py-2 text-sm font-bold text-slate-950 transition hover:bg-cyan-300"
-          >
-            Concluir tarefa
-          </button>
+        <Button variant="primary" onClick={() => void completeTask()} className="mt-6">
+          Concluir tarefa
+        </Button>
 
-        {message ? <p className="mt-4 text-sm text-cyan-200">{message}</p> : null}
+        {message ? <p className="mt-4 text-sm text-[var(--app-primary-strong)]">{message}</p> : null}
       </motion.section>
     </main>
   );
 }
+

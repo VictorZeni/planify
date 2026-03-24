@@ -1,14 +1,22 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 :root {
-  --background: #0f172a;
-  --foreground: #f8fafc;
-  --app-bg: #0f172a;
-  --app-text: #f8fafc;
-  --app-glow: rgba(34, 211, 238, 0.12);
-  --app-accent: #22d3ee;
-  --app-accent-strong: #06b6d4;
-  --app-accent-soft: rgba(34, 211, 238, 0.12);
+  --background: #f7f8f6;
+  --foreground: #111827;
+  --app-bg: #f7f8f6;
+  --app-surface: #ffffff;
+  --app-surface-soft: #f3f5f4;
+  --app-text: #111827;
+  --app-text-muted: #4b5563;
+  --app-border: #e5e7eb;
+  --app-primary: #16a34a;
+  --app-primary-strong: #15803d;
+  --app-primary-soft: #dcfce7;
+  --app-danger-soft: #fef2f2;
+  --app-danger-text: #b91c1c;
+  --app-warning-soft: #fffbeb;
+  --app-warning-text: #a16207;
+  --app-shadow: 0 1px 2px rgba(17, 24, 39, 0.04), 0 6px 20px rgba(17, 24, 39, 0.04);
 }
 
 @theme inline {
@@ -20,54 +28,55 @@
 }
 
 :root[data-theme="foco"] {
-  --app-bg: #0f172a;
-  --app-text: #f8fafc;
-  --app-glow: rgba(34, 211, 238, 0.12);
-  --app-accent: #22d3ee;
-  --app-accent-strong: #06b6d4;
-  --app-accent-soft: rgba(34, 211, 238, 0.12);
+  --app-primary: #16a34a;
+  --app-primary-strong: #15803d;
+  --app-primary-soft: #dcfce7;
 }
 
 :root[data-theme="energia"] {
-  --app-bg: #1c1917;
-  --app-text: #fff7ed;
-  --app-glow: rgba(251, 146, 60, 0.14);
-  --app-accent: #fb923c;
-  --app-accent-strong: #f97316;
-  --app-accent-soft: rgba(251, 146, 60, 0.14);
+  --app-primary: #ea580c;
+  --app-primary-strong: #c2410c;
+  --app-primary-soft: #ffedd5;
 }
 
 :root[data-theme="calma"] {
-  --app-bg: #052e2b;
-  --app-text: #ecfeff;
-  --app-glow: rgba(16, 185, 129, 0.14);
-  --app-accent: #34d399;
-  --app-accent-strong: #10b981;
-  --app-accent-soft: rgba(16, 185, 129, 0.14);
+  --app-primary: #059669;
+  --app-primary-strong: #047857;
+  --app-primary-soft: #d1fae5;
 }
 
 :root[data-theme="equilibrio"] {
-  --app-bg: #1e1b4b;
-  --app-text: #f5f3ff;
-  --app-glow: rgba(139, 92, 246, 0.14);
-  --app-accent: #a78bfa;
-  --app-accent-strong: #8b5cf6;
-  --app-accent-soft: rgba(139, 92, 246, 0.14);
+  --app-primary: #7c3aed;
+  --app-primary-strong: #6d28d9;
+  --app-primary-soft: #ede9fe;
 }
 
 :root[data-theme="impacto"] {
-  --app-bg: #2a0a10;
-  --app-text: #fff1f2;
-  --app-glow: rgba(244, 63, 94, 0.14);
-  --app-accent: #fb7185;
-  --app-accent-strong: #f43f5e;
-  --app-accent-soft: rgba(244, 63, 94, 0.14);
+  --app-primary: #dc2626;
+  --app-primary-strong: #b91c1c;
+  --app-primary-soft: #fee2e2;
 }
 
 body {
   background: var(--app-bg);
   color: var(--app-text);
   font-family: var(--font-sans);
+}
+
+* {
+  border-color: var(--app-border);
+}
+
+::selection {
+  background: var(--app-primary-soft);
+  color: var(--app-text);
+}
+
+.planify-surface {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+  box-shadow: var(--app-shadow);
 }
 
 @keyframes moduleCardFadeIn {
@@ -81,27 +90,3 @@ body {
   }
 }
 
-/* Harmoniza os principais acentos com o tema ativo */
-:root[data-theme] .text-cyan-300,
-:root[data-theme] .text-cyan-200 {
-  color: var(--app-accent) !important;
-}
-
-:root[data-theme] .bg-cyan-400,
-:root[data-theme] .bg-cyan-300 {
-  background-color: var(--app-accent-strong) !important;
-}
-
-:root[data-theme] .hover\:bg-cyan-300:hover,
-:root[data-theme] .hover\:bg-cyan-500\/20:hover,
-:root[data-theme] .hover\:bg-cyan-500\/25:hover {
-  background-color: var(--app-accent) !important;
-}
-
-:root[data-theme] .border-cyan-400\/40 {
-  border-color: var(--app-accent-soft) !important;
-}
-
-:root[data-theme] .bg-cyan-500\/10 {
-  background-color: var(--app-accent-soft) !important;
-}

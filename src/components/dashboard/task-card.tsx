@@ -1,8 +1,11 @@
-import { CountdownBadge } from "./countdown-badge";
+﻿import { CountdownBadge } from "./countdown-badge";
 import type { Priority } from "@/lib/priority";
 import { priorityLabel } from "@/lib/priority";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 type TaskCardProps = {
   title: string;
@@ -24,9 +27,9 @@ type TaskCardProps = {
 };
 
 function getPriorityBadgeClass(level: Priority) {
-  if (level === "high") return "border-rose-700 text-rose-200";
-  if (level === "medium") return "border-amber-700 text-amber-200";
-  return "border-emerald-700 text-emerald-200";
+  if (level === "high") return "border-red-200 bg-red-50 text-red-700";
+  if (level === "medium") return "border-amber-200 bg-amber-50 text-amber-700";
+  return "border-green-200 bg-green-50 text-green-700";
 }
 
 export function TaskCard({
@@ -51,40 +54,31 @@ export function TaskCard({
     <motion.li
       whileHover={{ y: -2 }}
       transition={{ duration: 0.22 }}
-      className="flex flex-col gap-3 rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm transition-shadow duration-200 hover:shadow-lg hover:shadow-cyan-500/10 md:flex-row md:items-center md:justify-between"
+      className="flex flex-col gap-3 rounded-xl border border-[var(--app-border)] bg-white p-4 shadow-sm md:flex-row md:items-center md:justify-between"
     >
       <div className="space-y-1">
         {editing ? (
           <div className="flex gap-2">
-            <input
+            <Input
               type="text"
               value={editTitle}
               onChange={(event) => onEditTitleChange(event.target.value)}
-              className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-sm outline-none ring-cyan-300 transition focus:ring-2"
+              className="py-1.5"
             />
-            <motion.button
-              whileTap={{ scale: 0.98 }}
-              type="button"
-              onClick={onSaveEdit}
-              className="rounded-lg border border-emerald-700 px-3 py-1.5 text-xs font-semibold text-emerald-200 transition hover:border-emerald-500"
-            >
+            <Button type="button" onClick={onSaveEdit} size="sm" variant="primary">
               Salvar
-            </motion.button>
-            <motion.button
-              whileTap={{ scale: 0.98 }}
-              type="button"
-              onClick={onCancelEdit}
-              className="rounded-lg border border-slate-700 px-3 py-1.5 text-xs font-semibold text-slate-200 transition hover:border-slate-500"
-            >
+            </Button>
+            <Button type="button" onClick={onCancelEdit} size="sm" variant="secondary">
               Cancelar
-            </motion.button>
+            </Button>
           </div>
         ) : (
           <div className="flex items-center gap-2">
+            <Checkbox checked={completed} onChange={onToggleComplete} aria-label="Concluir tarefa" />
             <Link
               href={focusHref}
-              className={`text-sm font-medium transition hover:text-cyan-200 ${
-                completed ? "text-slate-500 line-through" : "text-slate-100"
+              className={`text-sm font-medium transition ${
+                completed ? "text-[var(--app-text-muted)] line-through" : "text-[var(--app-text)] hover:text-[var(--app-primary)]"
               }`}
             >
               {title}
@@ -98,50 +92,27 @@ export function TaskCard({
           </div>
         )}
 
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-[var(--app-text-muted)]">
           {dueAt ? `Prazo: ${new Date(dueAt).toLocaleDateString("pt-BR")}` : "Sem prazo"}
           {categoryName ? ` - ${categoryName}` : ""}
         </p>
       </div>
 
-      <div className="flex gap-2">
-        <motion.button
-          whileTap={{ scale: 0.97 }}
-          type="button"
-          onClick={onToggleMission}
-          className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition ${
-            isMission
-              ? "border-cyan-500 text-cyan-200 hover:border-cyan-300"
-              : "border-slate-700 text-slate-200 hover:border-slate-500"
-          }`}
-        >
-          {isMission ? "Na Missão" : "Missão"}
-        </motion.button>
-        <motion.button
-          whileTap={{ scale: 0.97 }}
-          type="button"
-          onClick={onStartEdit}
-          className="rounded-lg border border-sky-700 px-3 py-1.5 text-xs font-semibold text-sky-200 transition hover:border-sky-500"
-        >
+      <div className="flex flex-wrap gap-2">
+        <Button type="button" onClick={onToggleMission} variant={isMission ? "primary" : "secondary"} size="sm">
+          {isMission ? "Na missão" : "Missão"}
+        </Button>
+        <Button type="button" onClick={onStartEdit} variant="secondary" size="sm">
           Editar
-        </motion.button>
-        <motion.button
-          whileTap={{ scale: 0.97 }}
-          type="button"
-          onClick={onToggleComplete}
-          className="rounded-lg border border-slate-700 px-3 py-1.5 text-xs font-semibold text-slate-200 transition hover:border-slate-500"
-        >
+        </Button>
+        <Button type="button" onClick={onToggleComplete} variant="secondary" size="sm">
           {completed ? "Reabrir" : "Concluir"}
-        </motion.button>
-        <motion.button
-          whileTap={{ scale: 0.97 }}
-          type="button"
-          onClick={onDelete}
-          className="rounded-lg border border-rose-700 px-3 py-1.5 text-xs font-semibold text-rose-200 transition hover:border-rose-500"
-        >
+        </Button>
+        <Button type="button" onClick={onDelete} variant="danger" size="sm">
           Excluir
-        </motion.button>
+        </Button>
       </div>
     </motion.li>
   );
 }
+

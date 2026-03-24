@@ -1,5 +1,6 @@
-import { AppShell } from "@/components/layout/app-shell";
+﻿import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/ui/page-header";
+import { PageWrapper } from "@/components/ui/page-wrapper";
 import { requireUserContext } from "@/lib/server/require-user";
 import { CalendarClient } from "./calendar-client";
 
@@ -14,7 +15,7 @@ export default async function CalendarPage() {
 
   return (
     <AppShell user={userCard}>
-      <div className="mx-auto w-full max-w-6xl space-y-6">
+      <PageWrapper>
         <PageHeader
           eyebrow="Calendário"
           title="Planejamento temporal"
@@ -29,7 +30,8 @@ export default async function CalendarPage() {
             completed: task.completed,
           }))}
         />
-      </div>
+      </PageWrapper>
     </AppShell>
   );
 }
+

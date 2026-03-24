@@ -1,5 +1,6 @@
-import { AppShell } from "@/components/layout/app-shell";
+﻿import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/ui/page-header";
+import { PageWrapper } from "@/components/ui/page-wrapper";
 import { requireUserContext } from "@/lib/server/require-user";
 import { GoalsClient } from "./goals-client";
 
@@ -28,7 +29,7 @@ export default async function GoalsPage() {
 
   return (
     <AppShell user={userCard}>
-      <div className="mx-auto w-full max-w-6xl space-y-6">
+      <PageWrapper>
         <PageHeader
           eyebrow="Metas"
           title="Curto, médio e longo prazo"
@@ -47,7 +48,8 @@ export default async function GoalsPage() {
             return { goalId: goal.id, total: p.total, completed: p.completed };
           })}
         />
-      </div>
+      </PageWrapper>
     </AppShell>
   );
 }
+

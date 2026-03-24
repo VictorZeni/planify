@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { resolveAccess } from "@/lib/server/access-state";
 
@@ -49,7 +49,7 @@ export async function proxy(request: NextRequest) {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!supabaseUrl || !supabaseAnonKey) {
     if (isApiRoute) {
-      return NextResponse.json({ error: "Supabase não configurado." }, { status: 500 });
+      return NextResponse.json({ error: "Supabase nÃ£o configurado." }, { status: 500 });
     }
     return NextResponse.redirect(new URL("/auth", request.url));
   }
@@ -123,7 +123,7 @@ export async function proxy(request: NextRequest) {
       }
 
       return NextResponse.json(
-        { error: "Acesso restrito. Entre em contato para liberação." },
+        { error: "Acesso restrito. Entre em contato para liberaÃ§Ã£o." },
         { status: 403 },
       );
     }
@@ -141,3 +141,4 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: ["/((?!_next/static|_next/image).*)"],
 };
+

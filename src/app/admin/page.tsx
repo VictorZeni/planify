@@ -1,7 +1,8 @@
-import { AppShell } from "@/components/layout/app-shell";
+﻿import { AppShell } from "@/components/layout/app-shell";
 import { requireUserContext } from "@/lib/server/require-user";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { AdminClient, type AdminUser } from "./admin-client";
+import { PageWrapper } from "@/components/ui/page-wrapper";
 
 export default async function AdminPage() {
   const { userCard } = await requireUserContext();
@@ -33,11 +34,11 @@ export default async function AdminPage() {
 
   return (
     <AppShell user={userCard}>
-      <div className="mx-auto w-full max-w-6xl space-y-6">
-        <header className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
-          <p className="text-xs uppercase tracking-[0.2em] text-cyan-300">Planify Admin</p>
-          <h1 className="mt-2 text-2xl font-bold">Gestao de acesso</h1>
-          <p className="mt-1 text-sm text-slate-300">
+      <PageWrapper>
+        <header className="planify-surface p-6">
+          <p className="text-xs uppercase tracking-[0.2em] text-[var(--app-primary)]">Planify Admin</p>
+          <h1 className="mt-2 text-2xl font-semibold">GestÃ£o de acesso</h1>
+          <p className="mt-1 text-sm text-[var(--app-text-muted)]">
             Controle manual de autorizacao para usuarios internos e pagantes.
           </p>
         </header>
@@ -46,7 +47,8 @@ export default async function AdminPage() {
           initialUsers={initialUsers}
           allowManualAuthorization={allowManualAuthorization}
         />
-      </div>
+      </PageWrapper>
     </AppShell>
   );
 }
+

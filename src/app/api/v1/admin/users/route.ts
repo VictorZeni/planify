@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { requireAdminApi } from "@/lib/server/require-admin";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -33,7 +33,7 @@ export async function GET() {
     return {
       id: profile.id,
       email: authUser?.email ?? "",
-      displayName: profile.display_name ?? authUser?.email?.split("@")[0] ?? "Usuário",
+      displayName: profile.display_name ?? authUser?.email?.split("@")[0] ?? "UsuÃ¡rio",
       isAuthorized: profile.is_authorized ?? false,
       isAdmin: profile.is_admin ?? false,
       billingStatus: profile.billing_status ?? "inactive",
@@ -43,3 +43,4 @@ export async function GET() {
 
   return NextResponse.json({ data: response });
 }
+

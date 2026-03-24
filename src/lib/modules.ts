@@ -56,3 +56,4 @@ export const PLANIFY_MODULES: PlanifyModule[] = [
 export function getModuleBySlug(slug: string) {
   return PLANIFY_MODULES.find((moduleItem) => moduleItem.route === `/modules/${slug}`) ?? null;
 }
+

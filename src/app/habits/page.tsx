@@ -1,5 +1,6 @@
-import { AppShell } from "@/components/layout/app-shell";
+﻿import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/ui/page-header";
+import { PageWrapper } from "@/components/ui/page-wrapper";
 import { requireUserContext } from "@/lib/server/require-user";
 import { HabitsClient } from "./habits-client";
 
@@ -23,14 +24,15 @@ export default async function HabitsPage() {
 
   return (
     <AppShell user={userCard}>
-      <div className="mx-auto w-full max-w-6xl space-y-6">
+      <PageWrapper>
         <PageHeader
           eyebrow="Hábitos"
           title="Consistência diária"
           description="Construa disciplina marcando seus hábitos todos os dias."
         />
         <HabitsClient initialHabits={habits ?? []} initialCheckins={checkins ?? []} />
-      </div>
+      </PageWrapper>
     </AppShell>
   );
 }
+

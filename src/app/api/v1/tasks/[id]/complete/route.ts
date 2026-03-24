@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { z } from "zod";
 import { calculateXP, levelFromXp } from "@/lib/services/xp";
 import { normalizePriority } from "@/lib/priority";
@@ -125,3 +125,4 @@ export async function POST(
     },
   });
 }
+

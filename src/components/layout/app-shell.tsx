@@ -1,4 +1,5 @@
-import { AppSidebar } from "./app-sidebar";
+﻿import { AppSidebar } from "./app-sidebar";
+import { AppNavbar } from "./app-navbar";
 import { MotivationModal } from "@/components/motivation/motivation-modal";
 import { AnimatedPageWrapper } from "@/components/motion/animated-page-wrapper";
 
@@ -17,16 +18,12 @@ export function AppShell({ children, user }: AppShellProps) {
   return (
     <div className="min-h-screen bg-[var(--app-bg)] text-[var(--app-text)]">
       <MotivationModal />
+      <AppNavbar subtitle="Planejamento com clareza" />
       <AppSidebar user={user} />
-      <main
-        className="px-4 pb-8 pt-16 md:ml-72 md:px-8 md:pt-8"
-        style={{
-          background:
-            "radial-gradient(circle at top, var(--app-glow) 0%, rgba(15,23,42,0) 45%)",
-        }}
-      >
+      <main className="pb-8 pt-6 md:ml-72">
         <AnimatedPageWrapper>{children}</AnimatedPageWrapper>
       </main>
     </div>
   );
 }
+

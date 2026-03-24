@@ -1,8 +1,10 @@
-"use client";
+﻿"use client";
 
 import { FormEvent, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { SectionCard } from "@/components/ui/section-card";
+import { Button } from "@/components/ui/button";
+import { Input, Select, Textarea } from "@/components/ui/input";
 
 type ProfessionalEntry = {
   id: string;
@@ -65,58 +67,45 @@ export function ProfessionalClient({ initialEntries }: { initialEntries: Profess
       <SectionCard title="Novo registro profissional" subtitle="Carreira, estudos e aprendizados.">
         <form onSubmit={createEntry} className="space-y-3">
           <div className="grid gap-3 md:grid-cols-2">
-            <select
+            <Select
               value={entryType}
-              onChange={(event) =>
-                setEntryType(event.target.value as "career" | "study" | "learning")
-              }
-              className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none ring-cyan-300 focus:ring-2"
+              onChange={(event) => setEntryType(event.target.value as "career" | "study" | "learning")}
             >
               <option value="career">Planejamento de carreira</option>
               <option value="study">Controle de estudos</option>
               <option value="learning">Aprendizado do dia</option>
-            </select>
-            <input
-              value={title}
-              onChange={(event) => setTitle(event.target.value)}
-              placeholder="Título"
-              className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none ring-cyan-300 focus:ring-2"
-            />
+            </Select>
+            <Input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Título" />
           </div>
-          <textarea
+          <Textarea
             value={content}
             onChange={(event) => setContent(event.target.value)}
             rows={4}
-            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none ring-cyan-300 focus:ring-2"
             placeholder="Descreva seu plano/estudo/aprendizado..."
           />
-          <button
-            type="submit"
-            className="rounded-lg bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
-          >
+          <Button type="submit" variant="primary">
             Salvar
-          </button>
+          </Button>
         </form>
       </SectionCard>
 
       <SectionCard title="Linha do tempo profissional">
         <div className="space-y-3">
           {entries.length === 0 ? (
-            <p className="text-sm text-slate-400">Sem registros ainda.</p>
+            <p className="text-sm text-[var(--app-text-muted)]">Sem registros ainda.</p>
           ) : (
             entries.map((entry) => (
-              <article key={entry.id} className="rounded-xl border border-slate-700 bg-slate-900/60 p-4">
-                <p className="text-xs uppercase tracking-wide text-cyan-300">
-                  {entryTypeLabel(entry.entry_type)}
-                </p>
-                <h3 className="mt-1 font-semibold text-slate-100">{entry.title}</h3>
-                {entry.content ? <p className="mt-2 text-sm text-slate-300">{entry.content}</p> : null}
+              <article key={entry.id} className="rounded-xl border border-[var(--app-border)] bg-[var(--app-surface-soft)] p-4">
+                <p className="text-xs uppercase tracking-wide text-[var(--app-primary)]">{entryTypeLabel(entry.entry_type)}</p>
+                <h3 className="mt-1 font-semibold text-[var(--app-text)]">{entry.title}</h3>
+                {entry.content ? <p className="mt-2 text-sm text-[var(--app-text-muted)]">{entry.content}</p> : null}
               </article>
             ))
           )}
         </div>
-        {message ? <p className="mt-4 text-sm text-cyan-200">{message}</p> : null}
+        {message ? <p className="mt-4 text-sm text-[var(--app-primary-strong)]">{message}</p> : null}
       </SectionCard>
     </div>
   );
 }
+

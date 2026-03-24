@@ -1,4 +1,4 @@
-type HeatmapPoint = {
+﻿type HeatmapPoint = {
   day: string;
   value: number;
 };
@@ -8,18 +8,18 @@ type HabitHeatmapProps = {
 };
 
 function colorByValue(value: number) {
-  if (value === 0) return "bg-slate-800";
-  if (value === 1) return "bg-cyan-900";
-  if (value === 2) return "bg-cyan-700";
-  if (value === 3) return "bg-cyan-500";
-  return "bg-cyan-300";
+  if (value === 0) return "bg-[#edf2ee]";
+  if (value === 1) return "bg-[#bbf7d0]";
+  if (value === 2) return "bg-[#86efac]";
+  if (value === 3) return "bg-[#4ade80]";
+  return "bg-[#22c55e]";
 }
 
 export function HabitHeatmap({ points }: HabitHeatmapProps) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md">
-      <h2 className="text-lg font-semibold text-white">Heatmap de consistencia</h2>
-      <p className="mt-1 text-xs text-slate-300">
+    <section className="rounded-xl border border-[var(--app-border)] bg-white p-5 shadow-sm">
+      <h2 className="text-lg font-semibold text-[var(--app-text)]">Heatmap de consistÃªncia</h2>
+      <p className="mt-1 text-xs text-[var(--app-text-muted)]">
         Intensidade baseada em conclusoes diarias.
       </p>
       <div className="mt-4 grid grid-cols-14 gap-1">
@@ -34,3 +34,4 @@ export function HabitHeatmap({ points }: HabitHeatmapProps) {
     </section>
   );
 }
+

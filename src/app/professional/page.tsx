@@ -1,5 +1,6 @@
-import { AppShell } from "@/components/layout/app-shell";
+﻿import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/ui/page-header";
+import { PageWrapper } from "@/components/ui/page-wrapper";
 import { requireUserContext } from "@/lib/server/require-user";
 import { ProfessionalClient } from "./professional-client";
 
@@ -22,14 +23,15 @@ export default async function ProfessionalPage() {
 
   return (
     <AppShell user={userCard}>
-      <div className="mx-auto w-full max-w-6xl space-y-6">
+      <PageWrapper>
         <PageHeader
           eyebrow="Profissional"
           title="Carreira e estudos"
           description="Registre evolução de carreira, plano de estudos e aprendizados."
         />
         <ProfessionalClient initialEntries={(entries ?? []) as ProfessionalRow[]} />
-      </div>
+      </PageWrapper>
     </AppShell>
   );
 }
+

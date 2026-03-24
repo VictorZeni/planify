@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { createTaskSchema } from "@/lib/validation/task";
 import { requireApiAccess } from "@/lib/server/api-access";
 import { apiError, apiValidationError } from "@/lib/server/api-response";
@@ -55,3 +55,4 @@ export async function POST(request: Request) {
 
   return NextResponse.json({ data }, { status: 201 });
 }
+

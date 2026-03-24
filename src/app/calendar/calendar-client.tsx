@@ -1,8 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { SectionCard } from "@/components/ui/section-card";
+import { Button } from "@/components/ui/button";
 
 type TaskEvent = {
   id: string;
@@ -81,37 +82,27 @@ export function CalendarClient({ tasks }: { tasks: TaskEvent[] }) {
         subtitle="Visual mensal, semanal e diário para planejamento completo."
         right={
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => shift(-1)}
-              className="rounded-lg border border-slate-700 p-2 text-slate-200 transition hover:border-slate-500"
-            >
+            <Button type="button" onClick={() => shift(-1)} size="sm" variant="secondary">
               <ChevronLeft className="h-4 w-4" />
-            </button>
-            <button
-              type="button"
-              onClick={() => shift(1)}
-              className="rounded-lg border border-slate-700 p-2 text-slate-200 transition hover:border-slate-500"
-            >
+            </Button>
+            <Button type="button" onClick={() => shift(1)} size="sm" variant="secondary">
               <ChevronRight className="h-4 w-4" />
-            </button>
+            </Button>
           </div>
         }
       >
         <div className="mb-4 flex gap-2">
           {(["month", "week", "day"] as const).map((mode) => (
-            <button
+            <Button
               key={mode}
               type="button"
               onClick={() => setView(mode)}
-              className={`rounded-lg px-3 py-1.5 text-xs font-semibold uppercase tracking-wide ${
-                view === mode
-                  ? "bg-cyan-400 text-slate-950"
-                  : "border border-slate-700 text-slate-200 hover:border-slate-500"
-              }`}
+              size="sm"
+              variant={view === mode ? "primary" : "secondary"}
+              className="uppercase tracking-wide"
             >
               {mode === "month" ? "Mês" : mode === "week" ? "Semana" : "Dia"}
-            </button>
+            </Button>
           ))}
         </div>
 
@@ -129,12 +120,12 @@ export function CalendarClient({ tasks }: { tasks: TaskEvent[] }) {
                     setCursor(date);
                     setView("day");
                   }}
-                  className={`rounded-lg border p-2 text-left transition ${
-                    isCurrentMonth ? "border-slate-700" : "border-slate-800 opacity-60"
-                  } ${hasTasks ? "bg-cyan-500/10" : "bg-slate-900/60"}`}
+                  className={`rounded-lg border p-2 text-left transition-all ${
+                    isCurrentMonth ? "border-[var(--app-border)]" : "border-[var(--app-border)] opacity-50"
+                  } ${hasTasks ? "bg-[var(--app-primary-soft)]" : "bg-[var(--app-surface-soft)]"}`}
                 >
-                  <p className="font-semibold text-slate-200">{date.getDate()}</p>
-                  <p className="mt-1 text-[10px] text-slate-400">
+                  <p className="font-semibold text-[var(--app-text)]">{date.getDate()}</p>
+                  <p className="mt-1 text-[10px] text-[var(--app-text-muted)]">
                     {hasTasks ? `${tasksByDay.get(key)?.length} tarefas` : "Sem tarefas"}
                   </p>
                 </button>
@@ -149,14 +140,14 @@ export function CalendarClient({ tasks }: { tasks: TaskEvent[] }) {
               const key = formatKey(date);
               const dayTasks = tasksByDay.get(key) ?? [];
               return (
-                <div key={key} className="rounded-lg border border-slate-700 bg-slate-900/60 p-3">
-                  <p className="text-xs font-semibold text-slate-200">{date.toLocaleDateString("pt-BR")}</p>
+                <div key={key} className="rounded-lg border border-[var(--app-border)] bg-[var(--app-surface-soft)] p-3">
+                  <p className="text-xs font-semibold text-[var(--app-text)]">{date.toLocaleDateString("pt-BR")}</p>
                   <div className="mt-2 space-y-1">
                     {dayTasks.length === 0 ? (
-                      <p className="text-[11px] text-slate-500">Sem tarefas</p>
+                      <p className="text-[11px] text-[var(--app-text-muted)]">Sem tarefas</p>
                     ) : (
                       dayTasks.slice(0, 3).map((task) => (
-                        <p key={task.id} className="truncate text-[11px] text-slate-300">
+                        <p key={task.id} className="truncate text-[11px] text-[var(--app-text-muted)]">
                           • {task.title}
                         </p>
                       ))
@@ -169,8 +160,8 @@ export function CalendarClient({ tasks }: { tasks: TaskEvent[] }) {
         ) : null}
 
         {view === "day" ? (
-          <div className="rounded-lg border border-slate-700 bg-slate-900/60 p-4">
-            <p className="text-sm font-semibold text-slate-100">
+          <div className="rounded-lg border border-[var(--app-border)] bg-[var(--app-surface-soft)] p-4">
+            <p className="text-sm font-semibold text-[var(--app-text)]">
               {cursor.toLocaleDateString("pt-BR", {
                 weekday: "long",
                 day: "2-digit",
@@ -179,11 +170,11 @@ export function CalendarClient({ tasks }: { tasks: TaskEvent[] }) {
             </p>
             <div className="mt-3 space-y-2">
               {selectedDayTasks.length === 0 ? (
-                <p className="text-sm text-slate-400">Nenhuma tarefa para este dia.</p>
+                <p className="text-sm text-[var(--app-text-muted)]">Nenhuma tarefa para este dia.</p>
               ) : (
                 selectedDayTasks.map((task) => (
-                  <p key={task.id} className="rounded-md border border-slate-700 p-2 text-sm text-slate-200">
-                    {task.completed ? "✅" : "•"} {task.title}
+                  <p key={task.id} className="rounded-md border border-[var(--app-border)] p-2 text-sm text-[var(--app-text)]">
+                    {task.completed ? "?" : "•"} {task.title}
                   </p>
                 ))
               )}
@@ -194,3 +185,4 @@ export function CalendarClient({ tasks }: { tasks: TaskEvent[] }) {
     </div>
   );
 }
+
