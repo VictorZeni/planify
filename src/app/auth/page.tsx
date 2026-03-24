@@ -56,7 +56,7 @@ export default function AuthPage() {
     <main className="min-h-screen bg-slate-950 px-6 py-10 text-slate-100">
       <div className="mx-auto w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-6">
         <Image
-          src="/planify-logo.png"
+          src="/planify-logo.svg"
           alt="Planify"
           width={220}
           height={60}
@@ -133,4 +133,5 @@ export default function AuthPage() {
     </main>
   );
 }
+
 

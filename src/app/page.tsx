@@ -6,7 +6,7 @@ export default function Home() {
       <main className="mx-auto flex w-full max-w-4xl flex-col gap-8">
         <section className="rounded-2xl border border-slate-800 bg-slate-900 p-6 md:p-8">
           <Image
-            src="/planify-logo.png"
+            src="/planify-logo.svg"
             alt="Planify"
             width={280}
             height={80}
@@ -60,4 +60,5 @@ export default function Home() {
     </div>
   );
 }
+
 

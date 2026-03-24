@@ -5,8 +5,8 @@ export const metadata: Metadata = {
   title: "Planify",
   description: "Planify: organize, execute e evolua com foco em produtividade real.",
   icons: {
-    icon: "/planify-logo.png",
-    shortcut: "/planify-logo.png",
+    icon: "/planify-logo.svg",
+    shortcut: "/planify-logo.svg",
     apple: "/planify-logo.png",
   },
 };

@@ -7,7 +7,7 @@ export default function PagamentoPage() {
     <main className="flex min-h-screen items-center justify-center bg-slate-950 px-6 py-10 text-slate-100">
       <section className="w-full max-w-2xl rounded-2xl border border-white/10 bg-slate-900 p-8">
         <Image
-          src="/planify-logo.png"
+          src="/planify-logo.svg"
           alt="Planify"
           width={220}
           height={60}
@@ -45,4 +45,5 @@ export default function PagamentoPage() {
     </main>
   );
 }
+
 

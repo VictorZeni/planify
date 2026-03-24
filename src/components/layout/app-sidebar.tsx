@@ -105,7 +105,7 @@ function SidebarContent({
     <div className="flex h-full flex-col">
       <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
         <Image
-          src="/planify-logo.png"
+          src="/planify-logo.svg"
           alt="Planify"
           width={220}
           height={60}
@@ -167,4 +167,5 @@ function SidebarContent({
     </div>
   );
 }
+
 
