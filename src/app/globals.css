@@ -70,6 +70,17 @@ body {
   font-family: var(--font-sans);
 }
 
+@keyframes moduleCardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Harmoniza os principais acentos com o tema ativo */
 :root[data-theme] .text-cyan-300,
 :root[data-theme] .text-cyan-200 {
