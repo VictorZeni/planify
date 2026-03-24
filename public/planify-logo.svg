@@ -1,6 +1,6 @@
 ﻿<svg width="1200" height="320" viewBox="0 0 1200 320" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="planifyTitle planifyDesc">
   <title id="planifyTitle">Planify logo</title>
-  <desc id="planifyDesc">Green checkmark icon and Planify wordmark in navy</desc>
+  <desc id="planifyDesc">Green checkmark icon with glowing white Planify wordmark</desc>
   <defs>
     <linearGradient id="planifyGreen" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#16A34A" />
@@ -10,13 +10,25 @@
       <stop offset="0%" stop-color="#059669" />
       <stop offset="100%" stop-color="#22C55E" />
     </linearGradient>
+    <filter id="wordGlow" x="0" y="0" width="1600" height="600" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="20" result="blur" />
+      <feColorMatrix
+        in="blur"
+        type="matrix"
+        values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.42 0"
+        result="softGlow"
+      />
+      <feBlend mode="normal" in="SourceGraphic" in2="softGlow" result="shape" />
+    </filter>
   </defs>
 
-  <g transform="translate(44 52)">
+  <g transform="translate(42 58)">
     <path d="M24 113 L77 64 L120 107 L232 0 L232 134 L197 100 L120 178 L24 113 Z" fill="url(#planifyGreen)"/>
     <path d="M24 113 L77 64 L120 107 L96 131 Z" fill="url(#planifyGreenDark)" opacity="0.9"/>
   </g>
 
-  <text x="330" y="198" font-family="Inter, Poppins, Segoe UI, Arial, sans-serif" font-size="168" font-weight="700" fill="#0B1F3A">Planify</text>
-  <text x="1035" y="122" font-family="Inter, Poppins, Segoe UI, Arial, sans-serif" font-size="38" font-weight="500" fill="#0B1F3A">R</text>
+  <g filter="url(#wordGlow)">
+    <text x="318" y="198" font-family="Inter, Poppins, Segoe UI, Arial, sans-serif" font-size="168" font-weight="700" fill="#FFFFFF">Planify</text>
+  </g>
+  <text x="972" y="122" font-family="Inter, Poppins, Segoe UI, Arial, sans-serif" font-size="38" font-weight="500" fill="#525252">R</text>
 </svg>
