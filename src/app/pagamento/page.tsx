@@ -1,4 +1,5 @@
-import Image from "next/image";
+﻿import Image from "next/image";
+import Link from "next/link";
 import { CheckoutButton } from "./checkout-button";
 
 export default function PagamentoPage() {
@@ -32,6 +33,13 @@ export default function PagamentoPage() {
 
         <p className="mt-4 text-xs text-slate-400">
           Se preferir liberação manual, fale com o administrador e solicite ativação da sua conta.
+        </p>
+        <p className="mt-2 text-xs text-slate-400">
+          Já pagou em uma página externa?{" "}
+          <Link href="/compra-confirmada" className="text-emerald-300 underline underline-offset-4">
+            Ver instruções de acesso
+          </Link>
+          .
         </p>
       </section>
     </main>

@@ -116,6 +116,13 @@ export default function AuthPage() {
         >
           Nao tem conta? Cadastre-se aqui
         </a>
+        <p className="mt-2 text-xs text-slate-400">
+          Ja pagou em uma pagina de vendas?{" "}
+          <a href="/compra-confirmada" className="text-emerald-300 underline underline-offset-4">
+            Veja como acessar
+          </a>
+          .
+        </p>
 
         {message ? (
           <p className="mt-4 rounded-lg border border-slate-700 bg-slate-950 p-3 text-sm text-slate-200">
