@@ -1,5 +1,5 @@
-﻿import Image from "next/image";
-import { Button } from "@/components/ui/button";
+﻿import Link from "next/link";
+import { Search, Plus } from "lucide-react";
 
 type AppNavbarProps = {
   title?: string;
@@ -7,25 +7,28 @@ type AppNavbarProps = {
   right?: React.ReactNode;
 };
 
-export function AppNavbar({ title = "Planify", subtitle, right }: AppNavbarProps) {
+export function AppNavbar({ right }: AppNavbarProps) {
   return (
-    <header className="sticky top-0 z-20 border-b border-[var(--app-border)] bg-[color:rgba(247,248,246,0.92)] backdrop-blur">
-      <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between gap-4 px-4 py-3 md:px-8">
-        <div className="flex items-center gap-3">
-          <Image src="/planify-logo.svg" alt="Planify" width={130} height={34} className="h-8 w-auto" priority />
-          <div className="hidden sm:block">
-            <p className="text-sm font-semibold text-[var(--app-text)]">{title}</p>
-            {subtitle ? <p className="text-xs text-[var(--app-text-muted)]">{subtitle}</p> : null}
-          </div>
+    <header className="border-b border-[var(--app-border)] bg-white px-4 py-3 md:px-6">
+      <div className="flex items-center gap-3">
+        <div className="relative w-full max-w-md">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--app-text-muted)]" />
+          <input
+            placeholder="Buscar..."
+            className="h-10 w-full rounded-lg border border-[var(--app-border)] bg-[var(--app-surface)] pl-9 pr-3 text-sm text-[var(--app-text)] outline-none transition-all placeholder:text-[var(--app-text-muted)] focus:border-[var(--app-primary)] focus:ring-2 focus:ring-[var(--app-primary-soft)]"
+          />
         </div>
-        <div className="flex items-center gap-2">
-          {right}
-          <Button variant="ghost" size="sm" className="hidden md:inline-flex">
-            Workspace
-          </Button>
-        </div>
+
+        <Link
+          href="/tasks"
+          className="ml-auto inline-flex h-10 items-center gap-2 rounded-lg bg-[var(--app-primary)] px-4 text-sm font-medium text-white transition-all hover:bg-[var(--app-primary-strong)]"
+        >
+          <Plus className="h-4 w-4" />
+          Nova tarefa
+        </Link>
+
+        {right}
       </div>
     </header>
   );
 }
-

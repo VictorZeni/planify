@@ -18,12 +18,19 @@ export function AppShell({ children, user }: AppShellProps) {
   return (
     <div className="min-h-screen bg-[var(--app-bg)] text-[var(--app-text)]">
       <MotivationModal />
-      <AppNavbar subtitle="Planejamento com clareza" />
-      <AppSidebar user={user} />
-      <main className="pb-8 pt-6 md:ml-72">
-        <AnimatedPageWrapper>{children}</AnimatedPageWrapper>
+      <main className="mx-auto w-full max-w-[1360px] px-3 pb-8 pt-4 md:px-6 md:pt-6">
+        <div className="overflow-hidden rounded-2xl border border-[var(--app-border)] bg-[var(--app-surface)] shadow-sm">
+          <div className="grid min-h-[calc(100vh-4rem)] md:grid-cols-[240px_1fr]">
+            <AppSidebar user={user} />
+            <div className="min-w-0 border-l border-[var(--app-border)] md:border-l">
+              <AppNavbar subtitle="Planejamento com clareza" />
+              <div className="p-4 md:p-6">
+                <AnimatedPageWrapper>{children}</AnimatedPageWrapper>
+              </div>
+            </div>
+          </div>
+        </div>
       </main>
     </div>
   );
 }
-
