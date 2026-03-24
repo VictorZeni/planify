@@ -4,6 +4,7 @@ import { FormEvent, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
+import { DEFAULT_KIWIFY_CHECKOUT_URL } from "@/lib/billing-config";
 
 function buildKiwifyCheckoutUrl(baseUrl: string, email: string) {
   try {
@@ -25,10 +26,8 @@ export default function AuthPage() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const checkoutBaseUrl = process.env.NEXT_PUBLIC_CHECKOUT_URL ?? "";
-  const checkoutUrl = checkoutBaseUrl
-    ? buildKiwifyCheckoutUrl(checkoutBaseUrl, email)
-    : "/pagamento";
+  const checkoutBaseUrl = process.env.NEXT_PUBLIC_CHECKOUT_URL ?? DEFAULT_KIWIFY_CHECKOUT_URL;
+  const checkoutUrl = buildKiwifyCheckoutUrl(checkoutBaseUrl, email);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

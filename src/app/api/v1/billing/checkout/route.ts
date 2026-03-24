@@ -3,6 +3,7 @@ import { createStripeCheckoutSession } from "@/lib/server/stripe";
 import { requireApiAccess } from "@/lib/server/api-access";
 import { apiError } from "@/lib/server/api-response";
 import { isPaymentActive } from "@/lib/server/billing-status";
+import { DEFAULT_KIWIFY_CHECKOUT_URL } from "@/lib/billing-config";
 
 export async function POST() {
   const access = await requireApiAccess();
@@ -19,14 +20,10 @@ export async function POST() {
   }
 
   try {
-    const paymentProvider = process.env.PAYMENT_PROVIDER ?? "stripe";
-    const checkoutUrl = process.env.NEXT_PUBLIC_CHECKOUT_URL;
+    const paymentProvider = process.env.PAYMENT_PROVIDER ?? "kiwify";
+    const checkoutUrl = process.env.NEXT_PUBLIC_CHECKOUT_URL ?? DEFAULT_KIWIFY_CHECKOUT_URL;
 
     if (paymentProvider === "kiwify") {
-      if (!checkoutUrl) {
-        return apiError("Missing NEXT_PUBLIC_CHECKOUT_URL for Kiwify checkout.", 500);
-      }
-
       const url = new URL(checkoutUrl);
       url.searchParams.set("email", user.email ?? "");
       url.searchParams.set("external_id", user.id);
