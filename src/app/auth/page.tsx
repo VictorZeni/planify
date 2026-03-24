@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { FormEvent, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -56,7 +56,7 @@ export default function AuthPage() {
     <main className="min-h-screen bg-slate-950 px-6 py-10 text-slate-100">
       <div className="mx-auto w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-6">
         <Image
-          src="/planify-logo-transparent.png"
+          src="/planify-logo.png"
           alt="Planify"
           width={220}
           height={60}
@@ -133,3 +133,4 @@ export default function AuthPage() {
     </main>
   );
 }
+

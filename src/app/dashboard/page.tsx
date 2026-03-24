@@ -204,7 +204,7 @@ export default async function DashboardPage() {
         <header className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
           <div>
             <Image
-              src="/planify-logo-transparent.png"
+              src="/planify-logo.png"
               alt="Planify"
               width={220}
               height={60}
@@ -310,5 +310,6 @@ export default async function DashboardPage() {
     </AppShell>
   );
 }
+
 
 

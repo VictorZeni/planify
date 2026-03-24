@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 
 export default function Home() {
   return (
@@ -6,7 +6,7 @@ export default function Home() {
       <main className="mx-auto flex w-full max-w-4xl flex-col gap-8">
         <section className="rounded-2xl border border-slate-800 bg-slate-900 p-6 md:p-8">
           <Image
-            src="/planify-logo-transparent.png"
+            src="/planify-logo.png"
             alt="Planify"
             width={280}
             height={80}
@@ -17,8 +17,8 @@ export default function Home() {
             Organize. Execute. Evolua.
           </h1>
           <p className="mt-4 max-w-2xl text-slate-300">
-            O Planify foi feito para transformar planejamento em execução real,
-            com foco, consistência e evolução diária.
+            O Planify foi feito para transformar planejamento em execuÃ§Ã£o real,
+            com foco, consistÃªncia e evoluÃ§Ã£o diÃ¡ria.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <a
@@ -60,3 +60,4 @@ export default function Home() {
     </div>
   );
 }
+

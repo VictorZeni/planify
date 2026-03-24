@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import Image from "next/image";
 
 export default function AcessoNegadoPage() {
@@ -6,7 +6,7 @@ export default function AcessoNegadoPage() {
     <main className="flex min-h-screen items-center justify-center bg-slate-950 px-6 py-10 text-slate-100">
       <section className="w-full max-w-xl rounded-2xl border border-rose-500/30 bg-slate-900 p-8">
         <Image
-          src="/planify-logo-transparent.png"
+          src="/planify-logo.png"
           alt="Planify"
           width={220}
           height={60}
@@ -14,9 +14,9 @@ export default function AcessoNegadoPage() {
           priority
         />
         <p className="mt-5 text-xs uppercase tracking-[0.2em] text-rose-300">Acesso restrito</p>
-        <h1 className="mt-2 text-2xl font-bold">Você não tem permissão para entrar aqui</h1>
+        <h1 className="mt-2 text-2xl font-bold">VocÃª nÃ£o tem permissÃ£o para entrar aqui</h1>
         <p className="mt-3 text-sm text-slate-300">
-          Sua conta ainda não está liberada para esta área. Entre em contato com o administrador.
+          Sua conta ainda nÃ£o estÃ¡ liberada para esta Ã¡rea. Entre em contato com o administrador.
         </p>
 
         <div className="mt-6 flex flex-wrap gap-3">
@@ -37,4 +37,5 @@ export default function AcessoNegadoPage() {
     </main>
   );
 }
+
 

@@ -1,13 +1,13 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Planify",
   description: "Planify: organize, execute e evolua com foco em produtividade real.",
   icons: {
-    icon: "/planify-logo-transparent.png",
-    shortcut: "/planify-logo-transparent.png",
-    apple: "/planify-logo-transparent.png",
+    icon: "/planify-logo.png",
+    shortcut: "/planify-logo.png",
+    apple: "/planify-logo.png",
   },
 };
 
@@ -36,3 +36,4 @@ export default function RootLayout({
     </html>
   );
 }
+
