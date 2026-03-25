@@ -1,4 +1,4 @@
-import crypto from "node:crypto";
+Ôªøimport crypto from "node:crypto";
 import nodemailer from "nodemailer";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { type BillingStatus, isPaymentActive } from "@/lib/server/billing-status";
@@ -212,14 +212,14 @@ export async function sendPostPurchaseEmails(params: {
   const accessSubject = "Acesse sua conta Planify";
   const accessText =
     `Seu pagamento foi aprovado.\n` +
-    `Use este link para ir para a p·gina de acesso:\n${loginRedirectUrl}\n\n` +
+    `Use este link para ir para a p√°gina de acesso:\n${loginRedirectUrl}\n\n` +
     `Importante: use o mesmo e-mail da compra (${params.email}).\n` +
     `Se for seu primeiro acesso, aceite o convite enviado pelo sistema para criar sua senha.`;
 
   const accessHtml = `
     <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #111827;">
-      <h2 style="margin: 0 0 12px;">Seu acesso est· pronto</h2>
-      <p>Seu pagamento foi aprovado. Clique no bot„o abaixo para ir para a p·gina de login.</p>
+      <h2 style="margin: 0 0 12px;">Seu acesso est√° pronto</h2>
+      <p>Seu pagamento foi aprovado. Clique no bot√£o abaixo para ir para a p√°gina de login.</p>
       <p style="margin: 20px 0;">
         <a href="${loginRedirectUrl}" style="background: #0ea5e9; color: #fff; padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: 600;">
           Ir para o login
@@ -284,3 +284,4 @@ export async function applyBillingToUser(params: {
 
   if (error) throw new Error(error.message);
 }
+
