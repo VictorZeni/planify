@@ -63,6 +63,20 @@ export function verifyKiwifyWebhook(
   const parsedPayload =
     payload && typeof payload === "object" ? (payload as KiwifyPayload) : null;
 
+  const queryToken = (() => {
+    try {
+      const url = new URL(request.url);
+      return (
+        url.searchParams.get("token") ??
+        url.searchParams.get("webhook_token") ??
+        url.searchParams.get("key") ??
+        null
+      );
+    } catch {
+      return null;
+    }
+  })();
+
   const headerToken =
     request.headers.get("x-kiwify-token") ??
     request.headers.get("x-webhook-token") ??
@@ -71,6 +85,10 @@ export function verifyKiwifyWebhook(
     null;
 
   if (headerToken && sameToken(headerToken, secret)) {
+    return true;
+  }
+
+  if (queryToken && sameToken(queryToken, secret)) {
     return true;
   }
 
