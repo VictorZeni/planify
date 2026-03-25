@@ -14,15 +14,15 @@ import {
 
 export async function POST(request: Request) {
   const rawPayload = await request.text();
-  if (!verifyKiwifyWebhook(request)) {
-    return apiError("Invalid Kiwify webhook signature", 401);
-  }
-
   let payload: Record<string, unknown>;
   try {
     payload = JSON.parse(rawPayload);
   } catch {
     return apiError("Invalid JSON payload", 400);
+  }
+
+  if (!verifyKiwifyWebhook(request, rawPayload, payload)) {
+    return apiError("Invalid Kiwify webhook signature", 401);
   }
 
   const normalized = normalizeKiwifyPayload(payload);

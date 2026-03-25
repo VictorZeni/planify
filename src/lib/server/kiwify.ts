@@ -22,15 +22,46 @@ type KiwifyPayload = {
   customer?: { email?: string; cpf?: string; document?: string; tax_id?: string };
   product_name?: string;
   product?: { name?: string };
+  signature?: string;
+  order?: {
+    order_id?: string | number;
+    order_ref?: string;
+    order_status?: string;
+    webhook_event_type?: string;
+    Product?: { product_name?: string };
+    Customer?: {
+      email?: string;
+      CPF?: string;
+      cpf?: string;
+      document?: string;
+      tax_id?: string;
+    };
+  };
 };
 
 function hash(input: string) {
   return crypto.createHash("sha256").update(input).digest("hex");
 }
 
-export function verifyKiwifyWebhook(request: Request) {
+function sameToken(left: string, right: string) {
+  if (left.length !== right.length) return false;
+  return crypto.timingSafeEqual(Buffer.from(left), Buffer.from(right));
+}
+
+function hmacSha1Hex(input: string, secret: string) {
+  return crypto.createHmac("sha1", secret).update(input).digest("hex");
+}
+
+export function verifyKiwifyWebhook(
+  request: Request,
+  rawPayload?: string,
+  payload?: unknown,
+) {
   const secret = process.env.KIWIFY_WEBHOOK_SECRET;
   if (!secret) return true;
+
+  const parsedPayload =
+    payload && typeof payload === "object" ? (payload as KiwifyPayload) : null;
 
   const headerToken =
     request.headers.get("x-kiwify-token") ??
@@ -39,18 +70,45 @@ export function verifyKiwifyWebhook(request: Request) {
     request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ??
     null;
 
-  if (!headerToken) return false;
-  return headerToken === secret;
+  if (headerToken && sameToken(headerToken, secret)) {
+    return true;
+  }
+
+  const providedSignature =
+    request.headers.get("x-kiwify-signature") ??
+    request.headers.get("x-signature") ??
+    parsedPayload?.signature ??
+    null;
+
+  if (!providedSignature || !rawPayload) {
+    return false;
+  }
+
+  const sig = providedSignature.toLowerCase();
+  const checks: string[] = [hmacSha1Hex(rawPayload, secret)];
+
+  if (parsedPayload?.order && typeof parsedPayload.order === "object") {
+    const orderJson = JSON.stringify(parsedPayload.order);
+    checks.push(hmacSha1Hex(orderJson, secret));
+  }
+
+  return checks.some((expected) => expected === sig);
 }
 
 export function normalizeKiwifyPayload(payload: KiwifyPayload) {
+  const orderCustomer = payload.order?.Customer;
+  const orderData = payload.order;
+
   const email =
     payload.email ??
     payload.customer_email ??
+    orderCustomer?.email ??
     payload.customer?.email ??
     null;
 
   const rawStatus =
+    orderData?.webhook_event_type ??
+    orderData?.order_status ??
     payload.payment_status ??
     payload.status ??
     payload.event ??
@@ -63,6 +121,10 @@ export function normalizeKiwifyPayload(payload: KiwifyPayload) {
     payload.document ??
     payload.customer_document ??
     payload.tax_id ??
+    orderCustomer?.CPF ??
+    orderCustomer?.cpf ??
+    orderCustomer?.document ??
+    orderCustomer?.tax_id ??
     payload.customer?.cpf ??
     payload.customer?.document ??
     payload.customer?.tax_id ??
@@ -70,6 +132,7 @@ export function normalizeKiwifyPayload(payload: KiwifyPayload) {
   );
   const externalEventId = String(
     payload.id ??
+      orderData?.order_id ??
       payload.order_id ??
       payload.orderId ??
       payload.transaction_id ??
@@ -78,9 +141,14 @@ export function normalizeKiwifyPayload(payload: KiwifyPayload) {
   );
 
   const orderRef = String(
-    payload.order_id ?? payload.orderId ?? payload.transaction_id ?? payload.transactionId ?? "",
+    orderData?.order_ref ??
+      payload.order_id ??
+      payload.orderId ??
+      payload.transaction_id ??
+      payload.transactionId ??
+      "",
   );
-  const productName = payload.product_name ?? payload.product?.name ?? null;
+  const productName = orderData?.Product?.product_name ?? payload.product_name ?? payload.product?.name ?? null;
 
   return {
     email,
