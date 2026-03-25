@@ -7,6 +7,7 @@ import {
   mapKiwifyStatusToBilling,
   normalizeKiwifyPayload,
   saveBillingEvent,
+  sendPostPurchaseEmails,
   verifyKiwifyWebhook,
 } from "@/lib/server/kiwify";
 
@@ -53,6 +54,19 @@ export async function POST(request: Request) {
     email: normalized.email,
     providerRef: normalized.orderRef || normalized.externalEventId,
   });
+
+  if (billingStatus === "active") {
+    try {
+      await sendPostPurchaseEmails({
+        email: normalized.email,
+        productName: normalized.productName,
+        orderRef: normalized.orderRef || normalized.externalEventId,
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "unknown_error";
+      console.error("[kiwify-webhook] failed to send purchase emails:", message);
+    }
+  }
 
   return NextResponse.json({ ok: true });
 }

@@ -2,7 +2,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { resolveAccess } from "@/lib/server/access-state";
 
-const PUBLIC_PAGES = new Set(["/auth", "/acesso-negado", "/pagamento", "/compra-confirmada"]);
+const PUBLIC_PAGES = new Set(["/auth", "/acesso", "/acesso-negado", "/pagamento", "/compra-confirmada"]);
 const PUBLIC_API_PREFIXES = [
   "/api/v1/health",
   "/api/v1/stripe/webhook",

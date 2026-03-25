@@ -48,6 +48,20 @@ Esse schema já inclui:
 5. Com pagamento aprovado, o webhook ativa:
    - `profiles.billing_status = active`
    - `profiles.is_authorized = true`
+   - envia email de confirmação de compra
+   - envia email com link para `/acesso` (redirecionamento para login)
+
+### Emails transacionais (pós-compra)
+
+Para enviar os dois emails pós-compra, configure:
+
+- `SMTP_HOST` (ex.: `smtp.gmail.com`)
+- `SMTP_PORT` (ex.: `465`)
+- `SMTP_SECURE` (`true` para SSL)
+- `SMTP_USER`
+- `SMTP_PASS` (App Password do Gmail)
+- `EMAIL_FROM`
+- `EMAIL_REPLY_TO` (opcional)
 
 ### Modo somente pagantes
 

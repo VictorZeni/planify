@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
@@ -30,6 +30,13 @@ export default function AuthPage() {
 
   const checkoutBaseUrl = process.env.NEXT_PUBLIC_CHECKOUT_URL ?? DEFAULT_KIWIFY_CHECKOUT_URL;
   const checkoutUrl = buildKiwifyCheckoutUrl(checkoutBaseUrl, email);
+
+  useEffect(() => {
+    const emailFromQuery = searchParams.get("email");
+    if (emailFromQuery) {
+      setEmail(emailFromQuery);
+    }
+  }, [searchParams]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
