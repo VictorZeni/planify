@@ -4,6 +4,7 @@ import { AppShell } from "@/components/layout/app-shell";
 import { PageWrapper } from "@/components/ui/page-wrapper";
 import { getModuleBySlug } from "@/lib/modules";
 import { requireUserContext } from "@/lib/server/require-user";
+import { ModuleRuntime } from "./module-runtime";
 
 type ModulePlaceholderPageProps = {
   params: Promise<{ slug: string }>;
@@ -24,8 +25,8 @@ export default async function ModulePlaceholderPage({ params }: ModulePlaceholde
           <p className="text-xs uppercase tracking-[0.2em] text-[var(--app-primary)]">Módulo</p>
           <h1 className="mt-2 text-2xl font-semibold text-[var(--app-text)]">{moduleItem.title}</h1>
           <p className="mt-3 text-sm leading-relaxed text-[var(--app-text-muted)]">{moduleItem.description}</p>
-          <div className="mt-6 rounded-xl border border-[var(--app-border)] bg-[var(--app-surface-soft)] p-4 text-sm text-[var(--app-text)]">
-            Página em construção. Em breve você terá os recursos completos deste módulo.
+          <div className="mt-6">
+            <ModuleRuntime slug={slug} />
           </div>
           <Link
             href="/modules"
