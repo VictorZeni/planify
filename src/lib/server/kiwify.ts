@@ -14,7 +14,12 @@ type KiwifyPayload = {
   payment_status?: string;
   email?: string;
   customer_email?: string;
-  customer?: { email?: string };
+  cpf?: string;
+  customer_cpf?: string;
+  document?: string;
+  customer_document?: string;
+  tax_id?: string;
+  customer?: { email?: string; cpf?: string; document?: string; tax_id?: string };
   product_name?: string;
   product?: { name?: string };
 };
@@ -52,6 +57,17 @@ export function normalizeKiwifyPayload(payload: KiwifyPayload) {
     "unknown";
 
   const status = String(rawStatus).toLowerCase();
+  const cpf = normalizeCpf(
+    payload.cpf ??
+    payload.customer_cpf ??
+    payload.document ??
+    payload.customer_document ??
+    payload.tax_id ??
+    payload.customer?.cpf ??
+    payload.customer?.document ??
+    payload.customer?.tax_id ??
+    null,
+  );
   const externalEventId = String(
     payload.id ??
       payload.order_id ??
@@ -68,6 +84,7 @@ export function normalizeKiwifyPayload(payload: KiwifyPayload) {
 
   return {
     email,
+    cpf,
     status,
     externalEventId,
     orderRef,
@@ -75,16 +92,63 @@ export function normalizeKiwifyPayload(payload: KiwifyPayload) {
   };
 }
 
+function normalizeCpf(value: string | null | undefined) {
+  if (!value) return null;
+  const digits = value.replace(/\D/g, "");
+  if (!digits) return null;
+  return digits.length === 11 ? digits : null;
+}
+
 export function mapKiwifyStatusToBilling(status: string): BillingStatus {
-  if (["paid", "approved", "completed", "charge_approved", "active"].includes(status)) {
+  const normalized = status
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+
+  const activeStatuses = new Set([
+    "paid",
+    "approved",
+    "completed",
+    "charge_approved",
+    "active",
+    "compra_aprovada",
+    "purchase_approved",
+    "order_approved",
+    "assinatura_renovada",
+    "subscription_renewed",
+  ]);
+
+  if (activeStatuses.has(normalized)) {
     return "active";
   }
 
-  if (["refunded", "refund", "canceled", "cancelled", "chargeback"].includes(status)) {
+  const canceledStatuses = new Set([
+    "refunded",
+    "refund",
+    "canceled",
+    "cancelled",
+    "chargeback",
+    "reembolso",
+    "assinatura_cancelada",
+    "subscription_canceled",
+  ]);
+
+  if (canceledStatuses.has(normalized)) {
     return "canceled";
   }
 
-  if (["expired", "unpaid", "failed"].includes(status)) {
+  const unpaidStatuses = new Set([
+    "expired",
+    "unpaid",
+    "failed",
+    "compra_recusada",
+    "assinatura_atrasada",
+    "subscription_past_due",
+  ]);
+
+  if (unpaidStatuses.has(normalized)) {
     return "unpaid";
   }
 
@@ -98,6 +162,26 @@ export async function findUserIdByEmail(email: string) {
 
   const match = data.users.find((item) => item.email?.toLowerCase() === email.toLowerCase());
   return match?.id ?? null;
+}
+
+export async function findUserIdByCpf(cpf: string) {
+  const adminClient = createAdminClient();
+  const { data, error } = await adminClient
+    .from("profiles")
+    .select("id")
+    .eq("cpf", cpf)
+    .maybeSingle();
+
+  if (error) {
+    const message = error.message.toLowerCase();
+    if (message.includes("column") && message.includes("cpf")) {
+      console.warn("[kiwify-webhook] profiles.cpf column not found. Skipping CPF validation.");
+      return null;
+    }
+    throw new Error(error.message);
+  }
+
+  return data?.id ?? null;
 }
 
 export async function inviteUserForAccess(email: string) {
@@ -184,7 +268,10 @@ export async function sendPostPurchaseEmails(params: {
   productName?: string | null;
   orderRef?: string | null;
 }) {
-  if (!isTransactionalEmailConfigured()) return;
+  if (!isTransactionalEmailConfigured()) {
+    console.warn("[kiwify-email] SMTP not configured. Skipping post-purchase emails.");
+    return;
+  }
 
   const appBaseUrl = getAppBaseUrl();
   const productLabel = params.productName?.trim() || "Planify";
@@ -249,25 +336,46 @@ export async function saveBillingEvent(params: {
   providerEventId: string;
   provider: "kiwify";
   email: string | null;
+  cpf?: string | null;
   status: string;
   payload: unknown;
 }) {
   const adminClient = createAdminClient();
-  const { error } = await adminClient.from("billing_events").upsert({
+  const insertPayload = {
     provider_event_id: params.providerEventId,
     provider: params.provider,
     customer_email: params.email,
+    customer_cpf: params.cpf ?? null,
     event_status: params.status,
     payload: params.payload,
-  });
+  };
 
-  if (error) throw new Error(error.message);
+  const { error } = await adminClient.from("billing_events").upsert(insertPayload);
+
+  if (!error) return;
+
+  const message = error.message.toLowerCase();
+  if (message.includes("customer_cpf")) {
+    const fallbackPayload = {
+      provider_event_id: params.providerEventId,
+      provider: params.provider,
+      customer_email: params.email,
+      event_status: params.status,
+      payload: params.payload,
+    };
+    const { error: fallbackError } = await adminClient.from("billing_events").upsert(fallbackPayload);
+    if (!fallbackError) return;
+    throw new Error(fallbackError.message);
+  }
+
+  throw new Error(error.message);
 }
 
 export async function applyBillingToUser(params: {
   userId: string;
   billingStatus: BillingStatus;
   email?: string | null;
+  cpf?: string | null;
   providerRef?: string | null;
 }) {
   const adminClient = createAdminClient();
@@ -283,6 +391,26 @@ export async function applyBillingToUser(params: {
   });
 
   if (error) throw new Error(error.message);
+
+  if (!params.cpf) return;
+
+  const { error: cpfError } = await adminClient
+    .from("profiles")
+    .update({
+      cpf: params.cpf,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", params.userId)
+    .is("cpf", null);
+
+  if (cpfError) {
+    const message = cpfError.message.toLowerCase();
+    if (message.includes("column") && message.includes("cpf")) {
+      console.warn("[kiwify-webhook] profiles.cpf column not found. Skipping CPF persistence.");
+      return;
+    }
+    throw new Error(cpfError.message);
+  }
 }
 
 

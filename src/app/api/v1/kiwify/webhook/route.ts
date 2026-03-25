@@ -2,6 +2,7 @@
 import { apiError } from "@/lib/server/api-response";
 import {
   applyBillingToUser,
+  findUserIdByCpf,
   findUserIdByEmail,
   inviteUserForAccess,
   mapKiwifyStatusToBilling,
@@ -29,18 +30,19 @@ export async function POST(request: Request) {
     providerEventId: normalized.externalEventId,
     provider: "kiwify",
     email: normalized.email,
+    cpf: normalized.cpf,
     status: normalized.status,
     payload,
   });
 
-  if (!normalized.email) {
-    return NextResponse.json({ ok: true, skipped: "missing_email" });
+  const billingStatus = mapKiwifyStatusToBilling(normalized.status);
+  let userId = normalized.email ? await findUserIdByEmail(normalized.email) : null;
+
+  if (!userId && normalized.cpf) {
+    userId = await findUserIdByCpf(normalized.cpf);
   }
 
-  const billingStatus = mapKiwifyStatusToBilling(normalized.status);
-  let userId = await findUserIdByEmail(normalized.email);
-
-  if (!userId && billingStatus === "active") {
+  if (!userId && normalized.email && billingStatus === "active") {
     userId = await inviteUserForAccess(normalized.email);
   }
 
@@ -52,10 +54,11 @@ export async function POST(request: Request) {
     userId,
     billingStatus,
     email: normalized.email,
+    cpf: normalized.cpf,
     providerRef: normalized.orderRef || normalized.externalEventId,
   });
 
-  if (billingStatus === "active") {
+  if (billingStatus === "active" && normalized.email) {
     try {
       await sendPostPurchaseEmails({
         email: normalized.email,

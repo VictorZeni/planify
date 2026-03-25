@@ -48,6 +48,7 @@ Esse schema já inclui:
 5. Com pagamento aprovado, o webhook ativa:
    - `profiles.billing_status = active`
    - `profiles.is_authorized = true`
+   - valida usuario por email e tambem por CPF (quando o payload da Kiwify envia CPF)
    - envia email de confirmação de compra
    - envia email com link para `/acesso` (redirecionamento para login)
 
