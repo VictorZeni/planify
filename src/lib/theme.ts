@@ -1,28 +1,28 @@
-﻿export const THEMES = [
+export const THEMES = [
   {
     id: "foco",
     label: "Foco (Azul)",
-    description: "Aumenta concentraÃ§Ã£o e clareza mental.",
+    description: "Aumenta concentração e clareza mental.",
   },
   {
     id: "energia",
     label: "Energia (Laranja)",
-    description: "Estimula aÃ§Ã£o e senso de urgÃªncia.",
+    description: "Estimula ação e senso de urgência.",
   },
   {
     id: "calma",
     label: "Calma (Verde)",
-    description: "Reduz ansiedade e favorece consistÃªncia.",
+    description: "Reduz ansiedade e favorece consistência.",
   },
   {
     id: "equilibrio",
-    label: "EquilÃ­brio (Roxo)",
+    label: "Equilíbrio (Roxo)",
     description: "Combina criatividade com disciplina.",
   },
   {
     id: "impacto",
     label: "Impacto (Vermelho)",
-    description: "Aumenta senso de urgÃªncia e intensidade de execuÃ§Ã£o.",
+    description: "Aumenta senso de urgência e intensidade de execução.",
   },
 ] as const;
 

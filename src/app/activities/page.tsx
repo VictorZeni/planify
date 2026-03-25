@@ -1,4 +1,4 @@
-﻿import { redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/layout/app-shell";
 import { PageWrapper } from "@/components/ui/page-wrapper";
@@ -44,7 +44,7 @@ export default async function ActivitiesPage() {
       <PageWrapper maxWidth="5xl">
         <header className="planify-surface p-6">
           <p className="text-xs uppercase tracking-[0.2em] text-[var(--app-primary)]">Atividades</p>
-          <h1 className="mt-2 text-2xl font-semibold">HistÃ³rico recente</h1>
+          <h1 className="mt-2 text-2xl font-semibold">Histórico recente</h1>
           <p className="mt-1 text-sm text-[var(--app-text-muted)]">
             Acompanhe conclusoes e andamento das suas tarefas.
           </p>

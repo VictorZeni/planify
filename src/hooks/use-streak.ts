@@ -7,9 +7,9 @@ export function useStreak(currentStreak: number, hasCompletedToday: boolean) {
     const risk = currentStreak > 0 && !hasCompletedToday;
     return {
       currentStreak,
-      label: `ðŸ”¥ ${currentStreak} dias`,
+      label: `🔥 ${currentStreak} dias`,
       risk,
-      riskMessage: risk ? "VocÃª pode perder sua sequÃªncia hoje." : null,
+      riskMessage: risk ? "Você pode perder sua sequência hoje." : null,
     };
   }, [currentStreak, hasCompletedToday]);
 }

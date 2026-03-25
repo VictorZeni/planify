@@ -1,4 +1,4 @@
-﻿import { AppShell } from "@/components/layout/app-shell";
+import { AppShell } from "@/components/layout/app-shell";
 import { requireUserContext } from "@/lib/server/require-user";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { AdminClient, type AdminUser } from "./admin-client";
@@ -37,7 +37,7 @@ export default async function AdminPage() {
       <PageWrapper>
         <header className="planify-surface p-6">
           <p className="text-xs uppercase tracking-[0.2em] text-[var(--app-primary)]">Planify Admin</p>
-          <h1 className="mt-2 text-2xl font-semibold">GestÃ£o de acesso</h1>
+          <h1 className="mt-2 text-2xl font-semibold">Gestão de acesso</h1>
           <p className="mt-1 text-sm text-[var(--app-text-muted)]">
             Controle manual de autorizacao para usuarios internos e pagantes.
           </p>

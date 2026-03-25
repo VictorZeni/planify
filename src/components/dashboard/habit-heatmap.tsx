@@ -1,4 +1,4 @@
-﻿type HeatmapPoint = {
+type HeatmapPoint = {
   day: string;
   value: number;
 };
@@ -18,7 +18,7 @@ function colorByValue(value: number) {
 export function HabitHeatmap({ points }: HabitHeatmapProps) {
   return (
     <section className="rounded-xl border border-[var(--app-border)] bg-white p-5 shadow-sm">
-      <h2 className="text-lg font-semibold text-[var(--app-text)]">Heatmap de consistÃªncia</h2>
+      <h2 className="text-lg font-semibold text-[var(--app-text)]">Heatmap de consistência</h2>
       <p className="mt-1 text-xs text-[var(--app-text-muted)]">
         Intensidade baseada em conclusoes diarias.
       </p>

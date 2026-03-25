@@ -1,4 +1,4 @@
-﻿type LineProductivityChartProps = {
+type LineProductivityChartProps = {
   title?: string;
   subtitle?: string;
   points: Array<{
@@ -8,8 +8,8 @@
 };
 
 export function LineProductivityChart({
-  title = "Produtividade diÃ¡ria",
-  subtitle = "Tarefas concluÃ­das nos Ãºltimos 14 dias",
+  title = "Produtividade diária",
+  subtitle = "Tarefas concluídas nos últimos 14 dias",
   points,
 }: LineProductivityChartProps) {
   const width = 720;
@@ -39,7 +39,7 @@ export function LineProductivityChart({
           viewBox={`0 0 ${width} ${height}`}
           className="h-56 min-w-[640px] w-full"
           role="img"
-          aria-label="GrÃ¡fico de linha de produtividade"
+          aria-label="Gráfico de linha de produtividade"
         >
           <defs>
             <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
