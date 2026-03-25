@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -21,9 +21,8 @@ type Task = {
 
 type Dream = {
   id: string;
-  title: string;
+  title: string | null;
   content: string;
-  category: string;
 };
 
 type Habit = {
@@ -102,10 +101,7 @@ export function ModuleRuntime({ slug }: ModuleRuntimeProps) {
 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [dreams, setDreams] = useState<Dream[]>([]);
-  const [dreamTitle, setDreamTitle] = useState("");
-  const [dreamDescription, setDreamDescription] = useState("");
-  const [dreamCategory, setDreamCategory] = useState("PESSOAL");
-  const [editingDreamId, setEditingDreamId] = useState<string | null>(null);
+  const [dreamFile, setDreamFile] = useState<File | null>(null);
 
   const [habits, setHabits] = useState<Habit[]>([]);
   const [habitName, setHabitName] = useState("");
@@ -176,8 +172,8 @@ export function ModuleRuntime({ slug }: ModuleRuntimeProps) {
       if (slug === "quadro-dos-sonhos") {
         const { data, error } = await supabase
           .from("notes")
-          .select("id, title, content, category")
-          .eq("category", "SONHOS")
+          .select("id, title, content")
+          .eq("category", "SONHOS_FOTO")
           .order("created_at", { ascending: false });
         if (error) throw error;
         setDreams((data ?? []) as Dream[]);
@@ -239,85 +235,72 @@ export function ModuleRuntime({ slug }: ModuleRuntimeProps) {
     } finally {
       setLoading(false);
     }
-  }
-
-  async function addDream(event: FormEvent<HTMLFormElement>) {
+  }  async function addDream(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (dreamTitle.trim().length < 3) {
-      setMessage("Título inválido.");
+    if (!dreamFile) {
+      setMessage("Selecione uma foto.");
       return;
     }
+
     const {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) return;
 
-    if (editingDreamId) {
-      const { error } = await supabase
-        .from("notes")
-        .update({
-          title: dreamTitle.trim(),
-          content: dreamDescription.trim(),
-          category: dreamCategory.toUpperCase(),
-        })
-        .eq("id", editingDreamId);
-      if (error) {
-        setMessage(error.message);
-        return;
-      }
-      setDreams((prev) =>
-        prev.map((item) =>
-          item.id === editingDreamId
-            ? { ...item, title: dreamTitle.trim(), content: dreamDescription.trim(), category: dreamCategory.toUpperCase() }
-            : item,
-        ),
-      );
-      setEditingDreamId(null);
-      setMessage("Objetivo atualizado.");
-    } else {
-      const { data, error } = await supabase
-        .from("notes")
-        .insert({
-          user_id: user.id,
-          title: dreamTitle.trim(),
-          content: dreamDescription.trim(),
-          category: "SONHOS",
-        })
-        .select("id, title, content, category")
-        .single();
-      if (error) {
-        setMessage(error.message);
-        return;
-      }
-      setDreams((prev) => [data as Dream, ...prev]);
-      setMessage("Objetivo adicionado.");
+    const extension = dreamFile.name.includes(".") ? dreamFile.name.split(".").pop() : "jpg";
+    const storagePath = `${user.id}/dreams/${uid()}.${extension}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("avatars")
+      .upload(storagePath, dreamFile, { upsert: false });
+
+    if (uploadError) {
+      setMessage(uploadError.message);
+      return;
     }
 
-    setDreamTitle("");
-    setDreamDescription("");
-    setDreamCategory("PESSOAL");
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from("avatars").getPublicUrl(storagePath);
+
+    const { data, error } = await supabase
+      .from("notes")
+      .insert({
+        user_id: user.id,
+        title: storagePath,
+        content: publicUrl,
+        category: "SONHOS_FOTO",
+      })
+      .select("id, title, content")
+      .single();
+
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+
+    setDreams((prev) => [data as Dream, ...prev]);
+    setDreamFile(null);
+    setMessage("Foto adicionada.");
   }
 
   async function removeDream(id: string) {
+    const target = dreams.find((item) => item.id === id);
     const { error } = await supabase.from("notes").delete().eq("id", id);
     if (error) {
       setMessage(error.message);
       return;
     }
-    setDreams((prev) => prev.filter((item) => item.id !== id));
-    if (editingDreamId === id) {
-      setEditingDreamId(null);
-      setDreamTitle("");
-      setDreamDescription("");
-      setDreamCategory("PESSOAL");
+    if (target?.title) {
+      await supabase.storage.from("avatars").remove([target.title]);
     }
-    setMessage("Objetivo removido.");
+    setDreams((prev) => prev.filter((item) => item.id !== id));
+    setMessage("Foto removida.");
   }
-
   async function addHabit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (habitName.trim().length < 2) {
-      setMessage("Nome de hábito inválido.");
+      setMessage("Nome de hÃ¡bito invÃ¡lido.");
       return;
     }
     const {
@@ -374,7 +357,7 @@ export function ModuleRuntime({ slug }: ModuleRuntimeProps) {
   async function saveGoal(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (goalTitle.trim().length < 3) {
-      setMessage("Título da meta inválido.");
+      setMessage("TÃ­tulo da meta invÃ¡lido.");
       return;
     }
     const {
@@ -488,7 +471,7 @@ export function ModuleRuntime({ slug }: ModuleRuntimeProps) {
   async function addDailyTask(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (dailyTitle.trim().length < 3) {
-      setMessage("Título inválido.");
+      setMessage("TÃ­tulo invÃ¡lido.");
       return;
     }
     const {
@@ -533,7 +516,7 @@ export function ModuleRuntime({ slug }: ModuleRuntimeProps) {
   function addCourse(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (courseName.trim().length < 2) {
-      setMessage("Nome do curso inválido.");
+      setMessage("Nome do curso invÃ¡lido.");
       return;
     }
     const parsedProgress = Math.max(0, Math.min(100, Number(courseProgress) || 0));
@@ -558,7 +541,7 @@ export function ModuleRuntime({ slug }: ModuleRuntimeProps) {
   function addBook(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (bookName.trim().length < 2) {
-      setMessage("Nome do livro inválido.");
+      setMessage("Nome do livro invÃ¡lido.");
       return;
     }
     setBooks((prev) => [{ id: uid(), name: bookName.trim(), status: bookStatus }, ...prev]);
@@ -605,7 +588,7 @@ export function ModuleRuntime({ slug }: ModuleRuntimeProps) {
   if (loading) {
     return (
       <div className="rounded-xl border border-[var(--app-border)] bg-[var(--app-surface-soft)] p-4 text-sm text-[var(--app-text-muted)]">
-        Carregando dados do módulo...
+        Carregando dados do mÃ³dulo...
       </div>
     );
   }
@@ -615,49 +598,31 @@ export function ModuleRuntime({ slug }: ModuleRuntimeProps) {
       {slug === "equilibrio" ? (
         <div className="space-y-3">
           <p className="text-sm text-[var(--app-text-muted)]">Tarefas planejadas hoje: {plannedToday}</p>
-          <p className="text-sm text-[var(--app-text-muted)]">Tarefas concluídas hoje: {completedToday}</p>
+          <p className="text-sm text-[var(--app-text-muted)]">Tarefas concluÃ­das hoje: {completedToday}</p>
           <p className="text-sm">
-            Classificação atual: <strong>{equilibrioStatus}</strong>
+            ClassificaÃ§Ã£o atual: <strong>{equilibrioStatus}</strong>
           </p>
         </div>
       ) : null}
 
-      {slug === "quadro-dos-sonhos" ? (
+            {slug === "quadro-dos-sonhos" ? (
         <div className="space-y-4">
           <form onSubmit={addDream} className="space-y-2">
-            <div className="grid gap-2 md:grid-cols-2">
-              <Input placeholder="Título" value={dreamTitle} onChange={(event) => setDreamTitle(event.target.value)} />
-              <Input placeholder="Categoria" value={dreamCategory} onChange={(event) => setDreamCategory(event.target.value)} />
-            </div>
-            <Textarea
-              rows={3}
-              placeholder="Descrição"
-              value={dreamDescription}
-              onChange={(event) => setDreamDescription(event.target.value)}
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={(event) => setDreamFile(event.target.files?.[0] ?? null)}
             />
             <Button type="submit" variant="primary">
-              {editingDreamId ? "Salvar edição" : "Adicionar objetivo"}
+              Adicionar foto
             </Button>
           </form>
 
-          <div className="space-y-2">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             {dreams.map((dream) => (
               <div key={dream.id} className="rounded-xl border border-[var(--app-border)] bg-[var(--app-surface-soft)] p-3">
-                <p className="font-semibold">{dream.title}</p>
-                <p className="text-xs uppercase text-[var(--app-primary)]">{dream.category}</p>
-                <p className="mt-1 text-sm text-[var(--app-text-muted)]">{dream.content}</p>
+                <img src={dream.content} alt="Foto do quadro dos sonhos" className="h-56 w-full rounded-lg object-cover" />
                 <div className="mt-2 flex gap-2">
-                  <Button
-                    size="sm"
-                    onClick={() => {
-                      setEditingDreamId(dream.id);
-                      setDreamTitle(dream.title);
-                      setDreamDescription(dream.content);
-                      setDreamCategory(dream.category);
-                    }}
-                  >
-                    Editar
-                  </Button>
                   <Button size="sm" variant="danger" onClick={() => void removeDream(dream.id)}>
                     Remover
                   </Button>
@@ -671,7 +636,7 @@ export function ModuleRuntime({ slug }: ModuleRuntimeProps) {
       {slug === "habitos-atomicos" ? (
         <div className="space-y-4">
           <form onSubmit={addHabit} className="flex gap-2">
-            <Input value={habitName} onChange={(event) => setHabitName(event.target.value)} placeholder="Novo hábito" />
+            <Input value={habitName} onChange={(event) => setHabitName(event.target.value)} placeholder="Novo hÃ¡bito" />
             <Button type="submit" variant="primary">Adicionar</Button>
           </form>
           <div className="space-y-2">
@@ -696,7 +661,7 @@ export function ModuleRuntime({ slug }: ModuleRuntimeProps) {
             <div key={point.key} className="space-y-1">
               <div className="flex items-center justify-between text-xs text-[var(--app-text-muted)]">
                 <span>{point.key}</span>
-                <span>{point.value} concluídas</span>
+                <span>{point.value} concluÃ­das</span>
               </div>
               <div className="h-2 rounded-full bg-[var(--app-surface-soft)]">
                 <div
@@ -713,7 +678,7 @@ export function ModuleRuntime({ slug }: ModuleRuntimeProps) {
         <div className="space-y-4">
           <form onSubmit={saveGoal} className="space-y-2">
             <Input
-              placeholder="Título da meta"
+              placeholder="TÃ­tulo da meta"
               value={goalTitle}
               onChange={(event) => setGoalTitle(event.target.value)}
             />
@@ -824,7 +789,7 @@ export function ModuleRuntime({ slug }: ModuleRuntimeProps) {
             <Input value={bookName} onChange={(event) => setBookName(event.target.value)} placeholder="Nome do livro" />
             <Select value={bookStatus} onChange={(event) => setBookStatus(event.target.value as Book["status"])}>
               <option value="lendo">Lendo</option>
-              <option value="concluido">Concluído</option>
+              <option value="concluido">ConcluÃ­do</option>
             </Select>
             <Button type="submit" variant="primary">Adicionar</Button>
           </form>
@@ -838,7 +803,7 @@ export function ModuleRuntime({ slug }: ModuleRuntimeProps) {
                     onChange={(event) => updateBookStatus(book.id, event.target.value as Book["status"])}
                   >
                     <option value="lendo">Lendo</option>
-                    <option value="concluido">Concluído</option>
+                    <option value="concluido">ConcluÃ­do</option>
                   </Select>
                   <Button size="sm" variant="danger" onClick={() => removeBook(book.id)}>Remover</Button>
                 </div>
@@ -869,7 +834,7 @@ export function ModuleRuntime({ slug }: ModuleRuntimeProps) {
               ))}
           </div>
           <p className="text-xs text-[var(--app-text-muted)]">
-            A lista é reiniciada automaticamente por data: apenas tarefas com data de hoje aparecem.
+            A lista Ã© reiniciada automaticamente por data: apenas tarefas com data de hoje aparecem.
           </p>
         </div>
       ) : null}
@@ -877,12 +842,12 @@ export function ModuleRuntime({ slug }: ModuleRuntimeProps) {
       {slug === "ikigai" ? (
         <form onSubmit={saveIkigai} className="space-y-3">
           <Input
-            placeholder="O que você ama"
+            placeholder="O que vocÃª ama"
             value={ikigai.love}
             onChange={(event) => setIkigai((prev) => ({ ...prev, love: event.target.value }))}
           />
           <Input
-            placeholder="No que você é bom"
+            placeholder="No que vocÃª Ã© bom"
             value={ikigai.goodAt}
             onChange={(event) => setIkigai((prev) => ({ ...prev, goodAt: event.target.value }))}
           />
@@ -912,7 +877,7 @@ export function ModuleRuntime({ slug }: ModuleRuntimeProps) {
         "ikigai",
       ].includes(slug) ? (
         <div className="rounded-xl border border-[var(--app-border)] bg-[var(--app-surface-soft)] p-4 text-sm text-[var(--app-text)]">
-          Módulo sem implementação específica.
+          MÃ³dulo sem implementaÃ§Ã£o especÃ­fica.
         </div>
       ) : null}
 
@@ -920,3 +885,4 @@ export function ModuleRuntime({ slug }: ModuleRuntimeProps) {
     </div>
   );
 }
+
